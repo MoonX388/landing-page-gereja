@@ -40,7 +40,7 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-3 md:flex">
           <a
-            href="#"
+            href="/login"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Masuk
@@ -76,7 +76,7 @@ export function SiteHeader() {
             ))}
             <div className="mt-2 flex flex-col gap-2">
               <Button asChild variant="outline" className="rounded-full">
-                <a href="#">Masuk</a>
+                <a href="/login">Masuk</a>
               </Button>
               <Button asChild className="rounded-full">
                 <a href="#harga">Coba Gratis</a>

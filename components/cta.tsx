@@ -12,17 +12,21 @@ export function CTA() {
           Bergabunglah dengan ratusan gereja yang telah memercayakan pengelolaan jemaat kepada GerejaPintar.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-            Mulai Gratis Sekarang
-            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="w-full border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground sm:w-auto"
-          >
-            Jadwalkan Demo
-          </Button>
+          <a href="#harga">
+            <Button size="lg" variant="secondary" className="w-full sm:w-auto">
+              Mulai Gratis Sekarang
+              <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+            </Button>
+          </a>
+          <a href="https://demo.gerejapintar.id">
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground sm:w-auto"
+            >
+              Lihat Demo
+            </Button>
+          </a>
         </div>
         <p className="mt-6 text-sm text-primary-foreground/70">
           Tidak perlu kartu kredit &middot; Uji coba 14 hari &middot; Batalkan kapan saja
