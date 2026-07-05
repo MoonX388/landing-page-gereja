@@ -155,7 +155,7 @@ export default function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground mb-4">
             Belum punya akun?{" "}
-            <a href="#" className="text-primary hover:text-primary/80 font-medium">
+            <a href="/register" className="text-primary hover:text-primary/80 font-medium">
               Daftar di sini
             </a>
           </p>

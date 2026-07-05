@@ -5,10 +5,10 @@ import { Church, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const navLinks = [
-  { label: "Fitur", href: "#fitur" },
-  { label: "Solusi", href: "#solusi" },
-  { label: "Harga", href: "#harga" },
-  { label: "Testimoni", href: "#testimoni" },
+  { label: "Fitur", href: "/fitur" },
+  { label: "Solusi", href: "/solusi" },
+  { label: "Harga", href: "/#harga" },
+  { label: "Dashboard", href: "/dashboard" },
 ]
 
 export function SiteHeader() {
@@ -17,7 +17,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <a href="#" className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Church className="h-5 w-5" aria-hidden="true" />
           </span>
@@ -46,7 +46,7 @@ export function SiteHeader() {
             Masuk
           </a>
           <Button asChild className="rounded-full">
-            <a href="#harga">Coba Gratis</a>
+            <a href="/register">Daftar Gratis</a>
           </Button>
         </div>
 
@@ -79,7 +79,7 @@ export function SiteHeader() {
                 <a href="/login">Masuk</a>
               </Button>
               <Button asChild className="rounded-full">
-                <a href="#harga">Coba Gratis</a>
+                <a href="/register">Daftar Gratis</a>
               </Button>
             </div>
           </nav>
