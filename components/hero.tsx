@@ -25,15 +25,17 @@ export function Hero() {
         </p>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Button asChild size="lg" className="group h-12 rounded-full px-7 text-base">
-            <a href="#harga">
+          <a href="#harga">
+            <Button size="lg" className="group h-12 rounded-full px-7 text-base">
               Mulai Sekarang
               <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </a>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="h-12 rounded-full px-7 text-base">
-            <a href="#solusi">Lihat Demo</a>
-          </Button>
+            </Button>
+          </a>
+          <a href="https://demo.gerejapintar.id">
+            <Button size="lg" variant="outline" className="h-12 rounded-full px-7 text-base">
+              Lihat Demo
+            </Button>
+          </a>
         </div>
 
         <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">

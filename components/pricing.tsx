@@ -24,7 +24,7 @@ const plans = [
     features: [
       "Data jemaat tak terbatas",
       "Manajemen keuangan & persembahan",
-      "Bot WhatsApp AI",
+      "Integrasi WhatsApp untuk otomasi",
       "Manajemen inventaris & aset",
       "Laporan & analitik lengkap",
       "Dukungan prioritas",
@@ -105,13 +105,15 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <Button
-                className="mt-8 w-full"
-                variant={plan.highlighted ? "secondary" : "default"}
-                size="lg"
-              >
-                {plan.cta}
-              </Button>
+              <a href={plan.name === "Sinode" ? "mailto:contact@gerejapintar.id" : "#harga"}>
+                <Button
+                  className="mt-8 w-full"
+                  variant={plan.highlighted ? "secondary" : "default"}
+                  size="lg"
+                >
+                  {plan.cta}
+                </Button>
+              </a>
             </div>
           ))}
         </div>
