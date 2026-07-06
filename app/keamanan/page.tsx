@@ -174,7 +174,7 @@ export default function KeamananPage() {
                   </li>
                   <li className="flex gap-2">
                     <span className="text-primary">→</span>
-                    <span className="text-muted-foreground">Recovery time objective (RTO) < 1 jam</span>
+                    <span className="text-foreground">Recovery time objective (RTO) &lt; 1 jam</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-primary">→</span>
