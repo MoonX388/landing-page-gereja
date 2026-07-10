@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Briefcase, MapPin, Clock, ArrowRight } from "lucide-react"
-
-export const metadata = {
-  title: "Karier di GerejaPintar | Bergabunglah Dengan Tim Kami",
-  description: "Lihat lowongan pekerjaan terbuka di GerejaPintar dan bergabunglah dengan tim yang passionate tentang transformasi digital gereja.",
-}
 
 export default function KarierPage() {
   const jobs = [

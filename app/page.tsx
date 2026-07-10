@@ -1,3 +1,5 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { Hero } from "@/components/hero"
 import { Stats } from "@/components/stats"

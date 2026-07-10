@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ArrowRight, Church, Zap, BarChart3, Users } from "lucide-react"
-
-export const metadata = {
-  title: "Solusi GerejaPintar | Untuk Gereja dari Semua Ukuran",
-  description: "Solusi manajemen gereja yang disesuaikan untuk gereja kecil, menengah, hingga besar dengan layanan dan dukungan terdepan.",
-}
 
 export default function SolutiPage() {
   const solutions = [

@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ArrowRight, Users, DollarSign, Calendar, Package, BarChart3, Smartphone } from "lucide-react"
-
-export const metadata = {
-  title: "Fitur GerejaPintar | Solusi Manajemen Gereja Terpadu",
-  description: "Jelajahi fitur-fitur lengkap GerejaPintar untuk manajemen jemaat, keuangan, penjadwalan, dan laporan gereja modern.",
-}
 
 export default function FiturPage() {
   const features = [

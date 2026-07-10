@@ -1,10 +1,7 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-
-export const metadata = {
-  title: "Kebijakan Privasi GerejaPintar",
-  description: "Kebijakan privasi GerejaPintar menjelaskan bagaimana kami mengumpulkan dan melindungi data Anda.",
-}
 
 export default function KebijaksanPrivasiPage() {
   const sections = [

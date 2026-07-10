@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { HandshakeIcon, Globe, Users, TrendingUp, ArrowRight } from "lucide-react"
-
-export const metadata = {
-  title: "Mitra GerejaPintar | Bergabung Dengan Ekosistem Kami",
-  description: "Jadilah mitra GerejaPintar dan tingkatkan bisnis Anda dengan solusi manajemen gereja terdepan.",
-}
 
 export default function MitraPage() {
   const partnerPrograms = [

@@ -67,7 +67,7 @@ export function Solutions() {
                 </span>
                 <div>
                   <div className="text-sm font-semibold text-foreground">Portal Jemaat</div>
-                  <div className="text-xs text-muted-foreground">gerejapintar.com/jemaat</div>
+                  <div className="text-xs text-muted-foreground">gerejapintar.id/jemaat</div>
                 </div>
               </div>
               <div className="mt-4 space-y-3">

@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { CheckCircle, AlertCircle, Clock } from "lucide-react"
-
-export const metadata = {
-  title: "Status Sistem GerejaPintar",
-  description: "Status real-time layanan GerejaPintar dan informasi uptime.",
-}
 
 export default function StatusSistemPage() {
   const services = [

@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Lock, Server, Eye, Shield, Key, AlertCircle } from "lucide-react"
-
-export const metadata = {
-  title: "Keamanan Data GerejaPintar | Enkripsi & Perlindungan Tingkat Enterprise",
-  description: "Keamanan data gereja adalah prioritas utama. Pelajari tentang enkripsi, backup, dan perlindungan data kami.",
-}
 
 export default function KeamananPage() {
   const securityFeatures = [

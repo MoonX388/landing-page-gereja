@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Users, Target, Heart, Globe } from "lucide-react"
-
-export const metadata = {
-  title: "Tentang GerejaPintar | Misi & Visi Kami",
-  description: "Pelajari tentang GerejaPintar, misi kami untuk transformasi digital gereja, dan tim yang berdedikasi.",
-}
 
 export default function TentangKamiPage() {
   const values = [

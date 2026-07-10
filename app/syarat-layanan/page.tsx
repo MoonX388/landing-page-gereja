@@ -1,10 +1,7 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-
-export const metadata = {
-  title: "Syarat Layanan GerejaPintar",
-  description: "Syarat dan ketentuan penggunaan platform GerejaPintar.",
-}
 
 export default function SyaratLayananPage() {
   const sections = [

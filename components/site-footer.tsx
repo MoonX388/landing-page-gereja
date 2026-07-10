@@ -70,7 +70,7 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} GerejaPintar.id. Seluruh hak cipta dilindungi.
+            &copy; {new Date().getFullYear()} GerejaPintar.id Seluruh hak cipta dilindungi.
           </p>
           <p className="text-sm text-muted-foreground">Dibuat dengan kasih untuk gereja Indonesia.</p>
         </div>

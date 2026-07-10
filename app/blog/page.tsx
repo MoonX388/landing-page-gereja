@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ArrowRight, Calendar, User } from "lucide-react"
-
-export const metadata = {
-  title: "Blog GerejaPintar | Artikel, Tips & Tren Manajemen Gereja",
-  description: "Baca artikel terbaru tentang manajemen gereja, transformasi digital, dan best practices untuk gereja modern.",
-}
 
 export default function BlogPage() {
   const posts = [
@@ -70,6 +67,10 @@ export default function BlogPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Trik Metadata untuk Client Component */}
+      <title>Blog GerejaPintar | Artikel, Tips & Tren Manajemen Gereja</title>
+      <meta name="description" content="Baca artikel terbaru tentang manajemen gereja, transformasi digital, dan best practices untuk gereja modern." />
+
       <SiteHeader />
       <main>
         {/* Hero Section */}

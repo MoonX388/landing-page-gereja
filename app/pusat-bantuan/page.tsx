@@ -1,11 +1,8 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Search, FileText, Video, MessageCircle, Mail } from "lucide-react"
-
-export const metadata = {
-  title: "Pusat Bantuan GerejaPintar | Dokumentasi & FAQ",
-  description: "Pusat bantuan lengkap untuk pengguna GerejaPintar dengan dokumentasi, tutorial, dan FAQ.",
-}
 
 export default function PusatBantuanPage() {
   const categories = [
