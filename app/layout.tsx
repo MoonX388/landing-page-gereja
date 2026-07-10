@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Fraunces, Geist } from 'next/font/google'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import './globals.css'
 import { cn } from "@/lib/utils";
 
@@ -38,8 +39,10 @@ export default function RootLayout({
   return (
     <html lang="id" className={cn("bg-background", inter.variable, fraunces.variable, "font-sans", geist.variable)}>
       <body className="font-sans antialiased">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <AuthProvider>
+          {children}
+          {process.env.NODE_ENV === 'production' && <Analytics />}
+        </AuthProvider>
       </body>
     </html>
   )

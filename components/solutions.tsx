@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image"
 import { Bot, LayoutDashboard, Smartphone, Check } from "lucide-react"
 

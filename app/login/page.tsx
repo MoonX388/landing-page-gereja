@@ -3,60 +3,69 @@
 import { useState, useEffect } from "react"
 import { Church, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation" // jika pakai App Router
+import { useRouter } from "next/navigation"
+import { useAuth } from "../context/AuthContext"
+import { demo } from "@/lib/all-link"
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login } = useAuth() 
+  
   const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState("")
+  
+  // 1. PASTIKAN BARIS INI TERTULIS DENGAN HURUF 'a' YANG LENGKAP:
+  const [username, setUsername] = useState("") 
+  
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-
-  // Muat email yang tersimpan saat komponen pertama kali di-render
+  
   useEffect(() => {
-    const savedEmail = localStorage.getItem("remembered_email")
-    if (savedEmail) {
-      setEmail(savedEmail)
-      setRememberMe(true)
-    }
-  }, [])
+  const savedUsername = localStorage.getItem("remembered_username")
+  if (savedUsername) {
+    setUsername(savedUsername)
+    setRememberMe(true)
+  }
+}, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
+  e.preventDefault()
+  setError("")
+  setLoading(true)
 
-    try {
-      // Simulasi login (ganti dengan API nyata nanti)
-      await new Promise(resolve => setTimeout(resolve, 500))
+  try {
+    // 1. Panggil fungsi login dan tampung data user yang sukses login
+    const loggedInUser = await login({ username, password })
 
-      // Simpan email jika "Ingat saya" dicentang
-      if (rememberMe) {
-        localStorage.setItem("remembered_email", email)
-      } else {
-        localStorage.removeItem("remembered_email")
-      }
-
-      // Redirect ke dashboard setelah login
-      router.push("/dashboard")
-    } catch (err) {
-      setError("Terjadi kesalahan saat login. Silakan coba lagi.")
-    } finally {
-      setLoading(false)
+    // 2. Kelola fitur "Ingat saya"
+    if (rememberMe) {
+      localStorage.setItem("remembered_username", username)
+    } else {
+      localStorage.removeItem("remembered_username")
     }
-  }
 
-  // Demo login langsung menuju demo.gerejapintar.id
+    // 3. REDIRECT DINAMIS: Arahkan ke /dashboard/id_user (Contoh: /dashboard/1)
+    if (loggedInUser && loggedInUser.id) {
+      router.push(`/dashboard/${loggedInUser.id}`)
+    } else {
+      throw new Error("ID Pengguna tidak ditemukan.")
+    }
+
+  } catch (err: any) {
+    setError(err.message || "Terjadi kesalahan saat login. Silakan coba lagi.")
+  } finally {
+    setLoading(false)
+  }
+}
+
   const handleDemoLogin = () => {
-    window.location.href = "https://demo.gerejapintar.id"
+    window.location.href = demo.defaults.baseURL + "/login" // Redirect ke demo.gerejapintar.id/login
   }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        {/* Header – tetap seperti desain Anda */}
         <div className="text-center mb-8">
           <a href="/" className="inline-flex items-center gap-2 mb-4">
             <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -71,20 +80,20 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="nama@gereja.id"
-              required
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
+  <div>
+    <label htmlFor="username" className="block text-sm font-medium text-foreground mb-2">
+      Email / Username
+    </label>
+    <input
+      id="username"
+      type="text" // UBAH KE TEXT: agar bisa menerima karakter non-email
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+      placeholder="nama@gereja.id atau username" // Perbarui placeholder
+      required
+      className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    />
+  </div>
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
@@ -104,7 +113,6 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label={showPassword ? "Sembunyikan sandi" : "Tampilkan sandi"}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
@@ -166,15 +174,6 @@ export default function LoginPage() {
             Butuh bantuan?{" "}
             <a href="mailto:support@gerejapintar.id" className="text-primary hover:text-primary/80 font-medium">
               Hubungi Support
-            </a>
-          </p>
-        </div>
-
-        <div className="mt-8 p-4 rounded-lg bg-secondary/30 border border-border">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong>Portal Demo:</strong> Gunakan email dan sandi apapun untuk demo. Data tidak disimpan. Untuk akses penuh, hubungi{" "}
-            <a href="mailto:contact@gerejapintar.id" className="text-primary hover:text-primary/80 font-medium">
-              contact@gerejapintar.id
             </a>
           </p>
         </div>

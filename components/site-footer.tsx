@@ -1,3 +1,5 @@
+"use client"
+
 import { Church } from "lucide-react"
 
 const columns = [

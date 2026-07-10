@@ -1,3 +1,5 @@
+"use client" // <--- TAMBAHKAN BARIS INI DI PALING ATAS
+
 import {
   Users,
   Wallet,

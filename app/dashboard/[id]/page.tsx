@@ -15,13 +15,10 @@ import {
   Menu,
   X,
   Users,
-  TrendingUp,
-  TrendingDown,
-  Clock,
-  ChevronRight,
-  ExternalLink,
 } from "lucide-react"
 import { useState } from "react"
+import { useParams, useRouter } from "next/navigation" // Ditambahkan useParams & useRouter
+import { useAuth } from "../../context/AuthContext" // Hubungkan ke Auth Context Anda
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -30,29 +27,46 @@ import { Input } from "@/components/ui/input"
 
 export default function DashboardPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const router = useRouter()
+  
+  // 1. Ambil params ID dari URL dan data user + fungsi logout dari Context
+  const params = useParams()
+  const { user, logout } = useAuth()
+  
+  const dashboardId = params?.id // Ini adalah ID yang ada di URL (misal: /dashboard/123)
 
+  // 2. Fungsi Logout Nyata terintegrasi dengan Context backend
   const handleLogout = () => {
     if (confirm("Apakah Anda yakin ingin keluar?")) {
-      window.location.href = "/"
+      logout()
+      router.push("/login")
     }
+  }
+
+  // Membuat inisial avatar secara dinamis dari nama admin
+  const getInitials = (name: string) => {
+    if (!name) return "U"
+    return name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase()
   }
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar - Dark like Vercel */}
+      {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white transform transition-transform duration-200 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:static md:w-64 flex-shrink-0`}
       >
         <div className="flex flex-col h-full">
-          {/* Logo */}
+          {/* Logo & Nama Gereja Dinamis */}
           <div className="px-6 py-5 border-b border-gray-800">
             <a href="/" className="inline-flex items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white text-lg font-bold">
                 G
               </span>
-              <span className="text-lg font-bold tracking-tight">GerejaPintar</span>
+              <span className="text-lg font-bold tracking-tight">
+                {user?.namaGereja || "GerejaPintar"}
+              </span>
             </a>
           </div>
 
@@ -110,13 +124,20 @@ export default function DashboardPage() {
                 <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-800" />
               </Button>
 
+              {/* Data Profil Admin Dinamis dari Backend */}
               <div className="flex items-center gap-3">
                 <Avatar className="h-9 w-9 border-2 border-gray-200 dark:border-gray-700">
-                  <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">AG</AvatarFallback>
+                  <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">
+                    {getInitials(user?.namaAdmin)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="hidden sm:block text-right">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">Admin Gereja</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">admin@gereja.id</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {user?.namaAdmin || "Admin"}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {user?.email || "Email tidak tersedia"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -126,46 +147,21 @@ export default function DashboardPage() {
         {/* Dashboard Content */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <div className="max-w-7xl mx-auto space-y-6">
-            {/* Welcome */}
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-              <p className="text-gray-500 dark:text-gray-400">Ringkasan aktivitas dan penggunaan platform Anda</p>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Dashboard ID: <span className="text-blue-600">#{dashboardId}</span>
+              </h1>
+              <p className="text-gray-500 dark:text-gray-400">
+                Selamat datang kembali di panel kendali {user?.namaGereja || "Gereja Anda"}.
+              </p>
             </div>
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatCard
-                title="Total Pengunjung"
-                value="12.847"
-                icon={Users}
-                trend="+12%"
-                trendUp
-                description="minggu ini"
-              />
-              <StatCard
-                title="Storage Terpakai"
-                value="4.2 GB"
-                icon={HardDrive}
-                trend="+8%"
-                trendUp
-                description="dari 10 GB"
-              />
-              <StatCard
-                title="Database"
-                value="3.8 GB"
-                icon={Database}
-                trend="+5%"
-                trendUp
-                description="ukuran total"
-              />
-              <StatCard
-                title="Domain Aktif"
-                value="7"
-                icon={Globe}
-                trend="2"
-                trendUp
-                description="baru bulan ini"
-              />
+              <StatCard title="Total Pengunjung" value="12.847" icon={Users} trend="+12%" trendUp description="minggu ini" />
+              <StatCard title="Storage Terpakai" value="4.2 GB" icon={HardDrive} trend="+8%" trendUp description="dari 10 GB" />
+              <StatCard title="Database" value="3.8 GB" icon={Database} trend="+5%" trendUp description="ukuran total" />
+              <StatCard title="Domain Aktif" value="7" icon={Globe} trend="2" trendUp description="baru bulan ini" />
             </div>
 
             {/* Analytics + Usage */}
@@ -178,10 +174,7 @@ export default function DashboardPage() {
                   <div className="h-48 flex items-end justify-between gap-2">
                     {[65, 78, 90, 85, 72, 95, 80].map((height, i) => (
                       <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                        <div
-                          className="w-full bg-blue-500 rounded-md transition-all"
-                          style={{ height: `${height}%` }}
-                        />
+                        <div className="w-full bg-blue-500 rounded-md transition-all" style={{ height: `${height}%` }} />
                         <span className="text-xs text-gray-400">{["Sen","Sel","Rab","Kam","Jum","Sab","Min"][i]}</span>
                       </div>
                     ))}
@@ -201,51 +194,10 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
-
-            {/* Database & Domains */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="shadow-sm border border-gray-200 dark:border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">Database Terakhir</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <DbItem name="jemaat" size="1.2 GB" tables="24" />
-                  <DbItem name="keuangan" size="0.8 GB" tables="12" />
-                  <DbItem name="inventaris" size="0.4 GB" tables="8" />
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-sm border border-gray-200 dark:border-gray-700">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">Domain Terdaftar</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <DomainItem domain="gerejapintar.id" status="Aktif" />
-                  <DomainItem domain="gereja.app" status="Aktif" />
-                  <DomainItem domain="sinode.org" status="Pending" />
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Quick Actions */}
-            <Card className="shadow-sm border border-gray-200 dark:border-gray-700">
-              <CardHeader>
-                <CardTitle className="text-base font-semibold">Aksi Cepat</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <QuickAction icon={HardDrive} label="Kelola Storage" />
-                  <QuickAction icon={Database} label="Backup Database" />
-                  <QuickAction icon={Globe} label="Tambah Domain" />
-                  <QuickAction icon={Settings} label="Pengaturan" />
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </main>
       </div>
 
-      {/* Overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
@@ -253,49 +205,17 @@ export default function DashboardPage() {
   )
 }
 
-// ===== Komponen Pendukung =====
-
-function SidebarLink({
-  href,
-  label,
-  active = false,
-  icon: Icon,
-}: {
-  href: string
-  label: string
-  active?: boolean
-  icon: React.ComponentType<{ className: string }>
-}) {
+// ===== Komponen Pendukung Tetap Sama =====
+function SidebarLink({ href, label, active = false, icon: Icon }: { href: string; label: string; active?: boolean; icon: React.ComponentType<{ className: string }> }) {
   return (
-    <a
-      href={href}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-        active
-          ? "bg-blue-600 text-white"
-          : "text-gray-400 hover:text-white hover:bg-gray-800"
-      }`}
-    >
+    <a href={href} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${active ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white hover:bg-gray-800"}`}>
       <Icon className="h-5 w-5 flex-shrink-0" />
       <span>{label}</span>
     </a>
   )
 }
 
-function StatCard({
-  title,
-  value,
-  icon: Icon,
-  trend,
-  trendUp,
-  description,
-}: {
-  title: string
-  value: string
-  icon: React.ComponentType<{ className: string }>
-  trend: string
-  trendUp: boolean
-  description: string
-}) {
+function StatCard({ title, value, icon: Icon, trend, trendUp, description }: { title: string; value: string; icon: React.ComponentType<{ className: string }>; trend: string; trendUp: boolean; description: string }) {
   return (
     <Card className="shadow-sm border border-gray-200 dark:border-gray-700">
       <CardContent className="p-5">
@@ -307,12 +227,6 @@ function StatCard({
           <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
-        </div>
-        <div className="flex items-center gap-1.5 mt-3">
-          <span className={`text-xs font-medium ${trendUp ? 'text-green-600' : 'text-red-600'}`}>
-            {trend}
-          </span>
-          <span className="text-xs text-gray-400">{description}</span>
         </div>
       </CardContent>
     </Card>
@@ -330,41 +244,5 @@ function UsageItem({ label, value, color }: { label: string; value: string; colo
         <div className={`h-full ${color} rounded-full`} style={{ width: value }} />
       </div>
     </div>
-  )
-}
-
-function DbItem({ name, size, tables }: { name: string; size: string; tables: string }) {
-  return (
-    <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-2 last:border-0 last:pb-0">
-      <div>
-        <p className="text-sm font-medium text-gray-900 dark:text-white">{name}</p>
-        <p className="text-xs text-gray-400">{tables} tabel</p>
-      </div>
-      <Badge variant="outline">{size}</Badge>
-    </div>
-  )
-}
-
-function DomainItem({ domain, status }: { domain: string; status: string }) {
-  const isActive = status === "Aktif"
-  return (
-    <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-2 last:border-0 last:pb-0">
-      <div className="flex items-center gap-2">
-        <Globe className="h-4 w-4 text-gray-400" />
-        <span className="text-sm font-medium text-gray-900 dark:text-white">{domain}</span>
-      </div>
-      <Badge variant={isActive ? "default" : "secondary"} className={isActive ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}>
-        {status}
-      </Badge>
-    </div>
-  )
-}
-
-function QuickAction({ icon: Icon, label }: { icon: React.ComponentType<{ className: string }>; label: string }) {
-  return (
-    <Button variant="outline" className="flex flex-col items-center justify-center h-auto py-4 gap-2 border-gray-200 dark:border-gray-700 hover:border-blue-500">
-      <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
-    </Button>
   )
 }

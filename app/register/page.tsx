@@ -3,8 +3,11 @@
 import { useState } from "react"
 import { Church, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation" // Ditambahkan untuk navigasi Next.js
+import api from "@/lib/api" // Import instance Axios Anda
 
 export default function RegisterPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [formData, setFormData] = useState({
@@ -31,34 +34,36 @@ export default function RegisterPage() {
     setError("")
     setLoading(true)
 
+    // Validasi Frontend Konfirmasi Sandi
+    if (formData.password !== formData.confirmPassword) {
+      setError("Sandi tidak cocok")
+      setLoading(false)
+      return
+    }
+
+    // Validasi Frontend Panjang Sandi
+    if (formData.password.length < 8) {
+      setError("Sandi harus minimal 8 karakter")
+      setLoading(false)
+      return
+    }
+
     try {
-      if (formData.password !== formData.confirmPassword) {
-        setError("Sandi tidak cocok")
-        setLoading(false)
-        return
-      }
+  // Mengirim data ke http://localhost:3000/auth/register
+  await api.post("/auth/register", {
+    namaGereja: formData.namaGereja,
+    namaAdmin: formData.namaAdmin,
+    email: formData.email,
+    password: formData.password,
+  })
 
-      if (formData.password.length < 8) {
-        setError("Sandi harus minimal 8 karakter")
-        setLoading(false)
-        return
-      }
-
-      console.log("[v0] Register attempt:", {
-        namaGereja: formData.namaGereja,
-        email: formData.email,
-        namaAdmin: formData.namaAdmin,
-      })
-
-      await new Promise(resolve => setTimeout(resolve, 800))
-
-      setSuccess(true)
-      setTimeout(() => {
-        window.location.href = "/login"
-      }, 2000)
-    } catch (err) {
-      setError("Terjadi kesalahan saat pendaftaran. Silakan coba lagi.")
-    } finally {
+  setSuccess(true)
+  setTimeout(() => {
+    router.push("/login") // Pindah ke halaman login setelah 2 detik sukses
+  }, 2000)
+} catch (err: any) {
+  setError(err.response?.data?.message || "Pendaftaran gagal.")
+} finally {
       setLoading(false)
     }
   }
@@ -173,11 +178,7 @@ export default function RegisterPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 aria-label={showPassword ? "Sembunyikan sandi" : "Tampilkan sandi"}
               >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
-                )}
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
           </div>
@@ -204,11 +205,7 @@ export default function RegisterPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 aria-label={showConfirmPassword ? "Sembunyikan sandi" : "Tampilkan sandi"}
               >
-                {showConfirmPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
-                )}
+                {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
           </div>
