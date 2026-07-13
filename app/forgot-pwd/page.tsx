@@ -1,9 +1,11 @@
+// client_side/app/forgot-pwd/page.tsx
 "use client"
 
 import { useState } from "react"
-import { Church, ArrowLeft, CheckCircle } from "lucide-react"
+import { Church, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import api from "@/lib/api" // Pastikan instance axios mengarah ke backend Anda
 
 export default function LupaSandiPage() {
   const [email, setEmail] = useState("")
@@ -17,11 +19,11 @@ export default function LupaSandiPage() {
     setLoading(true)
 
     try {
-      // Simulasi pengiriman email reset (ganti dengan API nyata)
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // 🚀 Tembak API Asli Backend NestJS
+      await api.post("/auth/forgot-password", { email })
       setSubmitted(true)
-    } catch (err) {
-      setError("Gagal mengirim. Silakan coba lagi.")
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Gagal mengirim permintaan reset. Silakan coba lagi.")
     } finally {
       setLoading(false)
     }
@@ -34,11 +36,11 @@ export default function LupaSandiPage() {
           <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-2xl font-semibold text-foreground">Cek Email Anda</h2>
           <p className="text-muted-foreground mt-2">
-            Kami telah mengirim tautan reset sandi ke <strong>{email}</strong>.
+            Tautan instruksi penyetelan ulang sandi berhasil dikirim ke email <strong>{email}</strong>. Silakan periksa kotak masuk atau folder spam Anda.
           </p>
-          {/*<Button className="mt-6 w-full" asChild>
+          <Button className="mt-6 w-full" asChild>
             <Link href="/login">Kembali ke Login</Link>
-          </Button>*/}
+          </Button>
         </div>
       </div>
     )
@@ -48,10 +50,7 @@ export default function LupaSandiPage() {
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       <div className="bg-card p-8 rounded-2xl shadow-lg border border-border max-w-md w-full">
         <div className="text-center mb-6">
-          {/*<Link href="/login" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> Kembali
-          </Link>*/}
-          <a href="/" className="inline-flex items-center gap-2 mt-4">
+          <a href="/" className="inline-flex items-center gap-2">
             <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
               <Church className="h-6 w-6" />
             </span>
@@ -68,7 +67,7 @@ export default function LupaSandiPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
-              Email
+              Email Akun
             </label>
             <input
               id="email"
