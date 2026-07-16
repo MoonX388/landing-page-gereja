@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://api.gerejapintar.id", // Ganti dengan URL API Anda 
+  baseURL: "https://api.gerejapintar.id", // Ganti dengan URL API Anda 
 });
 
 // Interceptor untuk menyisipkan Token JWT otomatis ke setiap request
