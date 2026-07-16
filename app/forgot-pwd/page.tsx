@@ -4,10 +4,12 @@
 import { useState } from "react"
 import { Church, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation" // 🚀 Tambahkan useRouter untuk navigasi aman
 import Link from "next/link"
-import api from "@/lib/api" // Pastikan instance axios mengarah ke backend Anda
+import api from "@/lib/api"
 
 export default function LupaSandiPage() {
+  const router = useRouter() // 🚀 Inisialisasi router
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -19,7 +21,7 @@ export default function LupaSandiPage() {
     setLoading(true)
 
     try {
-      // 🚀 Tembak API Asli Backend NestJS
+      // Menembak API Asli Backend NestJS
       await api.post("/auth/forgot-password", { email })
       setSubmitted(true)
     } catch (err: any) {
@@ -38,8 +40,12 @@ export default function LupaSandiPage() {
           <p className="text-muted-foreground mt-2">
             Tautan instruksi penyetelan ulang sandi berhasil dikirim ke email <strong>{email}</strong>. Silakan periksa kotak masuk atau folder spam Anda.
           </p>
-          <Button className="mt-6 w-full" asChild>
-            <Link href="/login">Kembali ke Login</Link>
+          {/* 🚀 FIXED: Ganti asChild dengan onClick router agar bebas crash TypeScript */}
+          <Button 
+            className="mt-6 w-full rounded-lg" 
+            onClick={() => router.push("/login")}
+          >
+            Kembali ke Login
           </Button>
         </div>
       </div>

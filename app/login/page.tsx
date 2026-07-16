@@ -12,55 +12,50 @@ export default function LoginPage() {
   const { login } = useAuth() 
   
   const [showPassword, setShowPassword] = useState(false)
-  
-  // 1. PASTIKAN BARIS INI TERTULIS DENGAN HURUF 'a' YANG LENGKAP:
   const [username, setUsername] = useState("") 
-  
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   
   useEffect(() => {
-  const savedUsername = localStorage.getItem("remembered_username")
-  if (savedUsername) {
-    setUsername(savedUsername)
-    setRememberMe(true)
-  }
-}, [])
+    const savedUsername = localStorage.getItem("remembered_username")
+    if (savedUsername) {
+      setUsername(savedUsername)
+      setRememberMe(true)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-  setError("")
-  setLoading(true)
+    e.preventDefault()
+    setError("")
+    setLoading(true)
 
-  try {
-    // 1. Panggil fungsi login dan tampung data user yang sukses login
-    const loggedInUser = await login({ username, password })
+    try {
+      {/* 🚀 KUNCI PERBAIKAN: Berikan casting 'as any' setelah await login agar objek user bisa dibaca TypeScript */}
+      const loggedInUser = (await login({ username, password })) as any
 
-    // 2. Kelola fitur "Ingat saya"
-    if (rememberMe) {
-      localStorage.setItem("remembered_username", username)
-    } else {
-      localStorage.removeItem("remembered_username")
+      if (rememberMe) {
+        localStorage.setItem("remembered_username", username)
+      } else {
+        localStorage.removeItem("remembered_username")
+      }
+
+      if (loggedInUser && loggedInUser.id) {
+        router.push(`/dashboard/${loggedInUser.id}`)
+      } else {
+        throw new Error("ID Pengguna tidak ditemukan.")
+      }
+
+    } catch (err: any) {
+      setError(err.message || "Terjadi kesalahan saat login. Silakan coba lagi.")
+    } finally {
+      setLoading(false)
     }
-
-    // 3. REDIRECT DINAMIS: Arahkan ke /dashboard/id_user (Contoh: /dashboard/1)
-    if (loggedInUser && loggedInUser.id) {
-      router.push(`/dashboard/${loggedInUser.id}`)
-    } else {
-      throw new Error("ID Pengguna tidak ditemukan.")
-    }
-
-  } catch (err: any) {
-    setError(err.message || "Terjadi kesalahan saat login. Silakan coba lagi.")
-  } finally {
-    setLoading(false)
   }
-}
 
   const handleDemoLogin = () => {
-    window.location.href = demo.defaults.baseURL + "/login" // Redirect ke demo.gerejapintar.id/login
+    window.location.href = demo.defaults.baseURL + "/login"
   }
 
   return (
@@ -80,20 +75,20 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-  <div>
-    <label htmlFor="username" className="block text-sm font-medium text-foreground mb-2">
-      Email / Username
-    </label>
-    <input
-      id="username"
-      type="text" // UBAH KE TEXT: agar bisa menerima karakter non-email
-      value={username}
-      onChange={(e) => setUsername(e.target.value)}
-      placeholder="nama@gereja.id atau username" // Perbarui placeholder
-      required
-      className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-  </div>
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-foreground mb-2">
+              Email / Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="nama@gereja.id atau username"
+              required
+              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
 
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">

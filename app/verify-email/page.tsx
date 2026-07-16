@@ -1,15 +1,13 @@
-// client_side/app/verify-email/page.tsx
 "use client"
 
-import { useEffect, useState, Suspense } from "react" // 🚀 Import Suspense dari react
-import { useSearchParams } from "next/navigation"
+import { useEffect, useState, Suspense } from "react"
+import { useSearchParams, useRouter } from "next/navigation" // 🚀 Tambahkan useRouter di sini
 import { CheckCircle, XCircle, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import api from "@/lib/api"
 
-// 🚀 1. Pindahkan logika pengambilan query dan tembak API ke komponen terpisah
 function VerifyEmailContent() {
+  const router = useRouter() // 🚀 Inisialisasi router di dalam konten
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
 
@@ -52,8 +50,12 @@ function VerifyEmailContent() {
           <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
           <h2 className="text-2xl font-semibold text-foreground">Verifikasi Berhasil!</h2>
           <p className="text-muted-foreground mt-2">{message}</p>
-          <Button className="mt-6 w-full rounded-lg" asChild>
-            <Link href="/login">Masuk Sekarang</Link>
+          {/* 🚀 Perbaikan Tombol Sukses: Menggunakan onClick router */}
+          <Button 
+            className="mt-6 w-full rounded-lg" 
+            onClick={() => router.push("/login")}
+          >
+            Masuk Sekarang
           </Button>
         </div>
       )}
@@ -63,8 +65,13 @@ function VerifyEmailContent() {
           <XCircle className="h-16 w-16 text-destructive mb-4" />
           <h2 className="text-2xl font-semibold text-destructive">Verifikasi Gagal</h2>
           <p className="text-muted-foreground mt-2">{message}</p>
-          <Button className="mt-6 w-full rounded-lg" variant="outline" asChild>
-            <Link href="/register">Daftar Ulang</Link>
+          {/* 🚀 Perbaikan Tombol Error: Menggunakan onClick router */}
+          <Button 
+            className="mt-6 w-full rounded-lg" 
+            variant="outline" 
+            onClick={() => router.push("/register")}
+          >
+            Daftar Ulang
           </Button>
         </div>
       )}
@@ -72,13 +79,10 @@ function VerifyEmailContent() {
   )
 }
 
-// 🚀 2. Komponen Utama yang diexport bertugas membungkus Content dengan Suspense Boundary
 export default function VerifyEmailPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="bg-card p-8 rounded-2xl shadow-lg max-w-md w-full text-center border border-border">
-        
-        {/* 🚀 KUNCI UTAMA: Semua komponen yang memanggil useSearchParams wajib di dalam Suspense */}
         <Suspense 
           fallback={
             <div className="flex flex-col items-center">
@@ -89,7 +93,6 @@ export default function VerifyEmailPage() {
         >
           <VerifyEmailContent />
         </Suspense>
-
       </div>
     </div>
   )
