@@ -17,8 +17,8 @@ export function middleware(req: NextRequest) {
 
   // 2. Deteksi jika diakses via domain utama atau localhost
   const isMainDomain = 
-    hostname === 'gerejapintar.id' || 
-    hostname === 'www.gerejapintar.id' || 
+    hostname === 'gerejapintar.id' ||
+    hostname === 'www.gerejapintar.id' ||
     hostname.startsWith('localhost:');
 
   if (isMainDomain) {
