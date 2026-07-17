@@ -1,55 +1,57 @@
+// app/dashboard/[id]/_views/OverviewView.tsx
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, HardDrive, Database, Globe } from "lucide-react"
+import { Users, HardDrive, ShieldCheck, CalendarRange } from "lucide-react"
 
 export default function OverviewView({ user, dashboardId }: { user: any; dashboardId: any }) {
   return (
     <div className="w-full space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Dashboard ID: <span className="text-blue-600">#{dashboardId}</span>
+          Gereja Subdomain: <span className="text-blue-600">{dashboardId}.gerejapintar.id</span>
         </h1>
         <p className="text-gray-500 dark:text-gray-400">
-          Selamat datang kembali di panel kendali {user?.namaGereja || "Gereja Anda"}.
+          Selamat datang kembali di panel kendali operasional digital pusat manajemen jemaat.
         </p>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats Cards Macrodynamic */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Pengunjung" value="12.847" icon={Users} />
-        <StatCard title="Storage Terpakai" value="4.2 GB" icon={HardDrive} />
-        <StatCard title="Database" value="3.8 GB" icon={Database} />
-        <StatCard title="Domain Aktif" value="7" icon={Globe} />
+        <StatCard title="Total Jemaat Terdaftar" value="1.248 Jiwa" icon={Users} />
+        <StatCard title="Staf & Admin Aktif" value="6 Akun" icon={ShieldCheck} />
+        <StatCard title="Agenda Bulan Ini" value="12 Kegiatan" icon={CalendarRange} />
+        <StatCard title="Penyimpanan Media" value="4.2 GB / 10 GB" icon={HardDrive} />
       </div>
 
-      {/* Analytics + Usage */}
+      {/* Analytics Graph & Data Quota Usage */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2 shadow-sm border border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="text-base font-semibold">Aktivitas 7 Hari Terakhir</CardTitle>
+            <CardTitle className="text-base font-semibold">Statistik Kehadiran Jemaat (7 Minggu Terakhir)</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-48 flex items-end justify-between gap-2">
-              {[65, 78, 90, 85, 72, 95, 80].map((height, i) => (
+              {[45, 60, 75, 70, 85, 95, 90].map((height, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
                   <div className="w-full bg-blue-500 rounded-md transition-all" style={{ height: `${height}%` }} />
-                  <span className="text-xs text-gray-400">{["Sen","Sel","Rab","Kam","Jum","Sab","Min"][i]}</span>
+                  <span className="text-xs text-gray-400">M-{i+1}</span>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
 
+        {/* 🚀 BERES! PENGGUNAAN SERVER DIGANTI TOTAL DENGAN OPERASIONAL TENANT SAAS */}
         <Card className="shadow-sm border border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="text-base font-semibold">Penggunaan Saat Ini</CardTitle>
+            <CardTitle className="text-base font-semibold">Alokasi & Kuota Aplikasi</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <UsageItem label="CPU" value="32%" color="bg-blue-500" />
-            <UsageItem label="Memory" value="58%" color="bg-green-500" />
-            <UsageItem label="Storage" value="42%" color="bg-yellow-500" />
-            <UsageItem label="Bandwidth" value="27%" color="bg-purple-500" />
+            <UsageItem label="Kuota Jemaat (Maks. 5000)" value="24%" color="bg-blue-500" percentValue="24%" />
+            <UsageItem label="Kuota Staf Admin (Maks. 10)" value="60%" color="bg-green-500" percentValue="60%" />
+            <UsageItem label="Penyimpanan Berkas Khotbah" value="42%" color="bg-yellow-500" percentValue="42%" />
+            <UsageItem label="Batas Kirim Email Warta/Bulan" value="78%" color="bg-purple-500" percentValue="78%" />
           </CardContent>
         </Card>
       </div>
@@ -75,12 +77,12 @@ function StatCard({ title, value, icon: Icon }: { title: string; value: string; 
   )
 }
 
-function UsageItem({ label, value, color }: { label: string; value: string; color: string }) {
+function UsageItem({ label, value, color, percentValue }: { label: string; value: string; color: string; percentValue: string }) {
   return (
     <div>
       <div className="flex justify-between text-sm">
-        <span className="text-gray-600 dark:text-gray-300">{label}</span>
-        <span className="font-medium text-gray-900 dark:text-white">{value}</span>
+        <span className="text-gray-600 dark:text-gray-300 text-xs font-medium truncate max-w-[180px]">{label}</span>
+        <span className="font-semibold text-gray-900 dark:text-white">{percentValue}</span>
       </div>
       <div className="mt-1 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
         <div className={`h-full ${color} rounded-full`} style={{ width: value }} />

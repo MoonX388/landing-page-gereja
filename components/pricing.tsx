@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 
 const plans = [
   {
-    name: "Jemaat",
+    name: "Gereja",
     price: "Gratis",
     period: "",
     description: "Untuk gereja kecil yang baru memulai digitalisasi.",
@@ -13,21 +13,23 @@ const plans = [
       "Hingga 100 data jemaat",
       "Manajemen kehadiran dasar",
       "Portal jemaat sederhana",
+      "Manajemen keuangan & persembahan",
+      "Manajemen inventaris & aset",
       "Dukungan komunitas",
     ],
     cta: "Mulai Gratis",
     highlighted: false,
   },
   {
-    name: "Pelayanan",
+    name: "Resort",
     price: "Rp 299rb",
     period: "/bulan",
     description: "Paling populer untuk gereja yang sedang bertumbuh.",
     features: [
-      "Data jemaat tak terbatas",
-      "Manajemen keuangan & persembahan",
+      "Hingga 5000 data jemaat",
+      "Manajemen kehadiran otomatis",
+      "Portal jemaat interaktif",
       "Integrasi WhatsApp untuk otomasi",
-      "Manajemen inventaris & aset",
       "Laporan & analitik lengkap",
       "Dukungan prioritas",
     ],
