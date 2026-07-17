@@ -32,7 +32,7 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      {/* 🚀 KUNCI PERBAIKAN: Berikan casting 'as any' setelah await login agar objek user bisa dibaca TypeScript */}
+      // 🚀 casting 'as any' agar properti kustom dari backend bisa terbaca tanpa eror linter
       const loggedInUser = (await login({ username, password })) as any
 
       if (rememberMe) {
@@ -41,10 +41,11 @@ export default function LoginPage() {
         localStorage.removeItem("remembered_username")
       }
 
-      if (loggedInUser && loggedInUser.id) {
-        router.push(`/dashboard/${loggedInUser.id}`)
+      // 🚀 PERBAIKAN UTAMA: Arahkan ke rute teks subdomain (bukan ID angka lagi)
+      if (loggedInUser && loggedInUser.subdomain) {
+        router.push(`/dashboard/${loggedInUser.subdomain}`)
       } else {
-        throw new Error("ID Pengguna tidak ditemukan.")
+        throw new Error("Alamat subdomain gereja tidak ditemukan pada akun ini.")
       }
 
     } catch (err: any) {
@@ -77,14 +78,14 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-foreground mb-2">
-              Email / Username
+              Email
             </label>
             <input
               id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="nama@gereja.id atau username"
+              placeholder="nama@gereja.id"
               required
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
