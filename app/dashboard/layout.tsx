@@ -1,3 +1,4 @@
+// app/dashboard/layout.tsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -6,7 +7,7 @@ import { useAuth } from "../context/AuthContext"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
-import { LayoutDashboard, BarChart3, HardDrive, Database, Gauge, Globe, Settings, LogOut, Search, Bell, Menu, X, Church } from "lucide-react"
+import { ShieldAlert, LayoutDashboard, BarChart3, HardDrive, Database, Globe, Settings, LogOut, Search, Bell, Menu, X, Church } from "lucide-react"
 
 export default function GlobalDashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -31,6 +32,7 @@ export default function GlobalDashboardLayout({ children }: { children: React.Re
       return
     }
 
+    // Tembak API Qwords
     fetch(`https://api.gerejapintar.id/auth/check-subdomain/${dashboardId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Subdomain palsu")
@@ -41,9 +43,7 @@ export default function GlobalDashboardLayout({ children }: { children: React.Re
         setNamaGerejaResmi(data.namaGereja)
       })
       .catch(() => {
-        setSubdomainValid(false)
-        // Mental keluar dari subdomain palsu ke link absolut /error/code domain utama
-        window.location.href = "https://gerejapintar.id/error/code"
+        setSubdomainValid(false) // ❌ Kunci status validasi jika gagal
       })
   }, [dashboardId, user, loading])
 
@@ -58,7 +58,27 @@ export default function GlobalDashboardLayout({ children }: { children: React.Re
     )
   }
 
-  if (!user || subdomainValid === false) return null
+  if (!user) return null
+
+  // 🛑 JIKA SUBDOMAIN PALSU: Render UI Eror langsung di sini agar 100% aman dari eror 404 Vercel!
+  if (subdomainValid === false) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-6 text-center font-sans">
+        <div className="p-4 bg-red-50 text-red-600 rounded-full mb-4 animate-bounce">
+          <ShieldAlert className="h-12 w-12" />
+        </div>
+        <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">404 - Hub Tidak Ditemukan</h1>
+        <p className="mt-3 text-sm text-gray-500 max-w-md mx-auto">
+          Maaf, alamat subdomain <strong className="text-gray-900">{dashboardId}.gerejapintar.id</strong> belum terdaftar atau masa langganannya telah kedaluwarsa di platform kami.
+        </p>
+        <div className="mt-6">
+          <Button onClick={() => window.location.href = "https://gerejapintar.id"} className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl px-6 py-2.5 shadow-sm">
+            Kembali ke Beranda Utama
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   const handleLogout = () => {
     if (confirm("Apakah Anda yakin ingin keluar?")) {
@@ -73,7 +93,7 @@ export default function GlobalDashboardLayout({ children }: { children: React.Re
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:w-64 flex-shrink-0 h-full`}>
         <div className="flex flex-col h-full">
           <div className="px-6 py-5 border-b border-gray-800">
-            <div className="inline-flex items-center gap-2.5" onClick={() => router.push(dashboardId ? `/dashboard/${dashboardId}` : "/dashboard")}>
+            <div className="inline-flex items-center gap-2.5 cursor-pointer" onClick={() => router.push(dashboardId ? `/dashboard/${dashboardId}` : "/dashboard")}>
               <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white text-lg font-bold">G</span>
               <span className="text-lg font-bold tracking-tight truncate max-w-[170px]">
                 {dashboardId ? namaGerejaResmi : "GerejaPintar Pusat"}
@@ -107,7 +127,7 @@ export default function GlobalDashboardLayout({ children }: { children: React.Re
         </div>
       </aside>
 
-      {/* ── MAIN CONTENT AREA (TAG FIXED <div>) ── */}
+      {/* ── MAIN CONTENT AREA ── */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
           <div className="flex items-center justify-between px-4 py-3 md:px-6">
