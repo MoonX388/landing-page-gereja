@@ -1,10 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation" // 🚀 1. IMPORT ROUTER DARI NEXT.JS
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Church, Globe, Users, ShieldAlert } from "lucide-react"
+import { Button } from "@/components/ui/button" // 🚀 2. IMPORT SHADCN BUTTON
+import { Church, Globe, Users, ShieldAlert, ArrowRight } from "lucide-react"
 
 export default function MasterDashboardPage() {
+  const router = useRouter() // 🚀 3. INISIALISASI ROUTER
   const [churches, setChurches] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -68,7 +71,7 @@ export default function MasterDashboardPage() {
         </div>
       </div>
 
-      {/* ── TABEL MANAJEMEN KLIEN ── */}
+      {/* ── TABEL MANAJEMEN KLIEN DENGAN FITUR INTIP (CARA 2) ── */}
       <Card className="shadow-sm border border-gray-200 dark:border-gray-700 w-full">
         <CardHeader>
           <CardTitle className="text-base font-semibold">Manajemen Klien & Langganan Domain</CardTitle>
@@ -84,6 +87,7 @@ export default function MasterDashboardPage() {
                   <th className="py-3 px-2">Administrator</th>
                   <th className="py-3 px-2">Domain Pemetaan</th>
                   <th className="py-3 px-2">Status Akun</th>
+                  <th className="py-3 px-2 text-center">Aksi</th> {/* 🚀 4. KOLOM AKSI BARU */}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -101,6 +105,18 @@ export default function MasterDashboardPage() {
                       <span className={`px-2 py-1 rounded-full text-xs font-semibold ${gereja.isVerified ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"}`}>
                         {gereja.isVerified ? "Terverifikasi" : "Pending"}
                       </span>
+                    </td>
+                    {/* 🚀 5. IMPLEMENTASI CARA 2: TOMBOL DIKLIK LANGSUNG TELEPORT KE DASHBOARD ID TENANT */}
+                    <td className="py-3.5 px-2 text-center">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="rounded-lg text-xs gap-1 shadow-sm hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        disabled={!gereja.subdomain} // Tombol mati jika subdomain kosong
+                        onClick={() => router.push(`/dashboard/${gereja.subdomain}`)}
+                      >
+                        Kelola Hub <ArrowRight className="h-3 w-3" />
+                      </Button>
                     </td>
                   </tr>
                 ))}

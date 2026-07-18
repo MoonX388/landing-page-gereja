@@ -1,10 +1,47 @@
 // app/dashboard/[id]/_views/OverviewView.tsx
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, HardDrive, ShieldCheck, CalendarRange } from "lucide-react"
 
 export default function OverviewView({ user, dashboardId }: { user: any; dashboardId: any }) {
+  // 🚀 1. DEKLARASI STATE DYNAMIC DATA
+  const [stats, setStats] = useState({
+    totalJemaat: 0,
+    totalStaffAdmin: 0,
+    agendaBulanIni: 0,
+  })
+  const [loading, setLoading] = useState(true)
+
+  // 🚀 2. FETCH DATA KETIKA DASHBOARD DIKUNJUNGI
+  useEffect(() => {
+    if (!dashboardId || dashboardId === "default") return
+
+    setLoading(true)
+    fetch(`https://api.gerejapintar.id/auth/dashboard-stats/${dashboardId}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Gagal memuat statistik")
+        return res.json()
+      })
+      .then((data) => {
+        setStats({
+          totalJemaat: data.totalJemaat,
+          totalStaffAdmin: data.totalStaffAdmin,
+          agendaBulanIni: data.agendaBulanIni,
+        })
+        setLoading(false)
+      })
+      .catch((err) => {
+        console.error("CORS / API Error:", err)
+        setLoading(false)
+      })
+  }, [dashboardId])
+
+  // 🚀 3. HITUNG PERSENTASE ALOKASI KUOTA SECARA OTOMATIS
+  const jemaatPercentage = Math.min(Math.round((stats.totalJemaat / 5000) * 100), 100)
+  const staffPercentage = Math.min(Math.round((stats.totalStaffAdmin / 10) * 100), 100)
+
   return (
     <div className="w-full space-y-6">
       <div>
@@ -16,12 +53,28 @@ export default function OverviewView({ user, dashboardId }: { user: any; dashboa
         </p>
       </div>
 
-      {/* Stats Cards Macrodynamic */}
+      {/* ── METRIK RINGKASAN REAL-TIME DARI DATABASE ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Jemaat Terdaftar" value="1.248 Jiwa" icon={Users} />
-        <StatCard title="Staf & Admin Aktif" value="6 Akun" icon={ShieldCheck} />
-        <StatCard title="Agenda Bulan Ini" value="12 Kegiatan" icon={CalendarRange} />
-        <StatCard title="Penyimpanan Media" value="4.2 GB / 10 GB" icon={HardDrive} />
+        <StatCard 
+          title="Total Jemaat Terdaftar" 
+          value={loading ? "..." : `${stats.totalJemaat} Jiwa`} 
+          icon={Users} 
+        />
+        <StatCard 
+          title="Staf & Admin Aktif" 
+          value={loading ? "..." : `${stats.totalStaffAdmin} Akun`} 
+          icon={ShieldCheck} 
+        />
+        <StatCard 
+          title="Agenda Bulan Ini" 
+          value={loading ? "..." : `${stats.agendaBulanIni} Kegiatan`} 
+          icon={CalendarRange} 
+        />
+        <StatCard 
+          title="Penyimpanan Media" 
+          value="4.2 GB / 10 GB" 
+          icon={HardDrive} 
+        />
       </div>
 
       {/* Analytics Graph & Data Quota Usage */}
@@ -42,16 +95,36 @@ export default function OverviewView({ user, dashboardId }: { user: any; dashboa
           </CardContent>
         </Card>
 
-        {/* 🚀 BERES! PENGGUNAAN SERVER DIGANTI TOTAL DENGAN OPERASIONAL TENANT SAAS */}
+        {/* ── KONTEN DYNAMIC ALOKASI KUOTA SAAS ── */}
         <Card className="shadow-sm border border-gray-200 dark:border-gray-700">
           <CardHeader>
             <CardTitle className="text-base font-semibold">Alokasi & Kuota Aplikasi</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <UsageItem label="Kuota Jemaat (Maks. 5000)" value="24%" color="bg-blue-500" percentValue="24%" />
-            <UsageItem label="Kuota Staf Admin (Maks. 10)" value="60%" color="bg-green-500" percentValue="60%" />
-            <UsageItem label="Penyimpanan Berkas Khotbah" value="42%" color="bg-yellow-500" percentValue="42%" />
-            <UsageItem label="Batas Kirim Email Warta/Bulan" value="78%" color="bg-purple-500" percentValue="78%" />
+            <UsageItem 
+              label="Kuota Jemaat (Maks. 5000)" 
+              value={`${jemaatPercentage}%`} 
+              color="bg-blue-500" 
+              percentValue={`${jemaatPercentage}%`} 
+            />
+            <UsageItem 
+              label="Kuota Staf Admin (Maks. 10)" 
+              value={`${staffPercentage}%`} 
+              color="bg-green-500" 
+              percentValue={`${staffPercentage}%`} 
+            />
+            <UsageItem 
+              label="Penyimpanan Berkas Khotbah" 
+              value="42%" 
+              color="bg-yellow-500" 
+              percentValue="42%" 
+            />
+            <UsageItem 
+              label="Batas Kirim Email Warta/Bulan" 
+              value="78%" 
+              color="bg-purple-500" 
+              percentValue="78%" 
+            />
           </CardContent>
         </Card>
       </div>

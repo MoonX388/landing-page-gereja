@@ -159,7 +159,7 @@ export default function LoginPage() {
           className="w-full rounded-lg"
           onClick={handleDemoLogin}
         >
-          Coba Demo
+          Coba Login Demo → demo.gerejapintar.id
         </Button>
 
         <div className="mt-6 text-center">
