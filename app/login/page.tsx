@@ -26,37 +26,53 @@ export default function LoginPage() {
     }
   }, [])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    setLoading(true)
+  // app/login/page.tsx (Bagian handleSubmit)
 
-    try {
-      const loggedInUser = (await login({ username, password })) as any
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setError("")
+  setLoading(true)
 
-      if (rememberMe) {
-        localStorage.setItem("remembered_username", username)
-      } else {
-        localStorage.removeItem("remembered_username")
-      }
-
-      // 🚀 KUNCI PERBAIKAN: Arahkan berdasarkan Role dari Database
-      if (loggedInUser && loggedInUser.role === 'super_admin') {
-        // Master Admin dialihkan ke rute bersih /dashboard
-        router.push('/dashboard')
-      } else if (loggedInUser && loggedInUser.subdomain) {
-        // Admin Gereja dialihkan ke /dashboard/nama-subdomain mereka
-        router.push(`/dashboard/${loggedInUser.subdomain}`)
-      } else {
-        throw new Error("Hak akses atau alamat subdomain akun tidak valid.")
-      }
-
-    } catch (err: any) {
-      setError(err.message || "Terjadi kesalahan saat login. Silakan coba lagi.")
-    } finally {
-      setLoading(false)
+  try {
+    // 🚀 1. DETEKSI SUBDOMAIN DARI URL BROWSER SEKARANG
+    const hostname = window.location.hostname
+    const parts = hostname.split('.')
+    
+    // Jika di localhost:3000 atau domain utama, subdomain diisi null/empty
+    let currentSubdomain = ""
+    if (parts.length > 2 && parts[0] !== 'www' && parts[0] !== 'api') {
+      currentSubdomain = parts[0]
     }
+
+    // 🚀 2. KIRIM SUBDOMAIN KEDALAM CONTEXT LOGIN
+    // Pastikan fungsi login di AuthContext kamu disesuaikan untuk menerima parameter ini
+    const loggedInUser = (await login({ 
+      username, 
+      password, 
+      subdomain: currentSubdomain // Kirim konteks lokasi login
+    })) as any
+
+    if (rememberMe) {
+      localStorage.setItem("remembered_username", username)
+    } else {
+      localStorage.removeItem("remembered_username")
+    }
+
+    // Navigasi setelah sukses tetap sama
+    if (loggedInUser && loggedInUser.role === 'super_admin') {
+      router.push('/dashboard')
+    } else if (loggedInUser && loggedInUser.subdomain) {
+      router.push(`/dashboard/${loggedInUser.subdomain}`)
+    } else {
+      throw new Error("Hak akses tidak valid.")
+    }
+
+  } catch (err: any) {
+    setError(err.message || "Terjadi kesalahan saat login. Silakan coba lagi.")
+  } finally {
+    setLoading(false)
   }
+}
 
   const handleDemoLogin = () => {
     window.location.href = demo.defaults.baseURL + "/login"
