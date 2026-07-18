@@ -32,7 +32,6 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
-      // 🚀 casting 'as any' agar properti kustom dari backend bisa terbaca tanpa eror linter
       const loggedInUser = (await login({ username, password })) as any
 
       if (rememberMe) {
@@ -41,11 +40,15 @@ export default function LoginPage() {
         localStorage.removeItem("remembered_username")
       }
 
-      // 🚀 PERBAIKAN UTAMA: Arahkan ke rute teks subdomain (bukan ID angka lagi)
-      if (loggedInUser && loggedInUser.subdomain) {
+      // 🚀 KUNCI PERBAIKAN: Arahkan berdasarkan Role dari Database
+      if (loggedInUser && loggedInUser.role === 'super_admin') {
+        // Master Admin dialihkan ke rute bersih /dashboard
+        router.push('/dashboard')
+      } else if (loggedInUser && loggedInUser.subdomain) {
+        // Admin Gereja dialihkan ke /dashboard/nama-subdomain mereka
         router.push(`/dashboard/${loggedInUser.subdomain}`)
       } else {
-        throw new Error("Alamat subdomain gereja tidak ditemukan pada akun ini.")
+        throw new Error("Hak akses atau alamat subdomain akun tidak valid.")
       }
 
     } catch (err: any) {
