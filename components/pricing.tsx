@@ -7,6 +7,8 @@ const plans = [
   {
     name: "Gereja",
     price: "Gratis",
+    originalPrice: "",
+    trial: "3 Bulan Gratis",
     period: "",
     description: "Untuk gereja kecil yang baru memulai digitalisasi.",
     features: [
@@ -18,11 +20,15 @@ const plans = [
       "Dukungan komunitas",
     ],
     cta: "Mulai Gratis",
+    // 🚀 Diarahkan langsung ke halaman pendaftaran mandiri (Self-service register)
+    href: "/register",
+    external: false,
     highlighted: false,
   },
   {
     name: "Resort",
-    price: "Rp 299rb",
+    price: "Rp 310rb",
+    originalPrice: "Rp 350rb",
     period: "/bulan",
     description: "Paling populer untuk gereja yang sedang bertumbuh.",
     features: [
@@ -34,11 +40,15 @@ const plans = [
       "Dukungan prioritas",
     ],
     cta: "Coba 14 Hari Gratis",
+    // 🚀 Mengarah ke WhatsApp Anda dengan pesan otomatis khusus Paket Resort
+    href: "https://wa.me/6282158024074?text=Halo%20GerejaPintar!%20Saya%20tertarik%20untuk%20mencoba%2014%20Hari%20Gratis%20dan%20berlangganan%20*Paket%20Resort*.",
+    external: true,
     highlighted: true,
   },
   {
     name: "Sinode",
     price: "Custom",
+    originalPrice: "",
     period: "",
     description: "Untuk gereja besar dengan banyak cabang.",
     features: [
@@ -49,6 +59,9 @@ const plans = [
       "Pelatihan tim on-site",
     ],
     cta: "Hubungi Kami",
+    // 🚀 Mengarah ke WhatsApp Anda dengan pesan otomatis konsultasi Paket Sinode
+    href: "https://wa.me/6282158024074?text=Halo%20GerejaPintar!%20Saya%20ingin%20berkonsultasi%20mengenai%20kebutuhan%20*Paket%20Sinode*%20untuk%20multi-cabang%20gereja%20kami.",
+    external: true,
     highlighted: false,
   },
 ]
@@ -83,14 +96,24 @@ export function Pricing() {
                 </span>
               )}
               <h3 className="font-serif text-xl font-semibold">{plan.name}</h3>
-              <div className="mt-4 flex items-end gap-1">
-                <span className="text-3xl font-bold">{plan.price}</span>
-                {plan.period && (
-                  <span className={plan.highlighted ? "text-primary-foreground/70" : "text-muted-foreground"}>
-                    {plan.period}
+              
+              {/* AREA MODIFIKASI HARGA DISKON */}
+              <div className="mt-4 flex flex-col justify-end min-h-[60px]">
+                {plan.originalPrice && (
+                  <span className={`text-sm line-through ${plan.highlighted ? "text-primary-foreground/60" : "text-muted-foreground/50"}`}>
+                    {plan.originalPrice}
                   </span>
                 )}
+                <div className="flex items-end gap-1">
+                  <span className="text-3xl font-bold tracking-tight">{plan.price}</span>
+                  {plan.period && (
+                    <span className={plan.highlighted ? "text-primary-foreground/70" : "text-muted-foreground"}>
+                      {plan.period}
+                    </span>
+                  )}
+                </div>
               </div>
+
               <p className={`mt-3 text-sm leading-relaxed ${plan.highlighted ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
                 {plan.description}
               </p>
@@ -109,7 +132,12 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <a href={plan.name === "Sinode" ? "mailto:contact@gerejapintar.id" : "#harga"}>
+              {/* ── LOGIKA TAUTAN DINAMIS TERINTEGRASI ── */}
+              <a 
+                href={plan.href}
+                target={plan.external ? "_blank" : "_self"}
+                rel={plan.external ? "noopener noreferrer" : undefined}
+              >
                 <Button
                   className="mt-8 w-full"
                   variant={plan.highlighted ? "secondary" : "default"}
