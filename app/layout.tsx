@@ -20,9 +20,9 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
-  title: 'GerejaPintar — Platform Digital Manajemen Gereja Terpadu',
+  title: 'Gereja Pintar — Platform Digital Manajemen Gereja Terpadu',
   description:
-    'GerejaPintar menyatukan dashboard admin, bot WhatsApp AI, dan portal jemaat dalam satu platform untuk mengelola gereja modern dengan mudah, aman, dan terintegrasi.',
+    'Gereja Pintar menyatukan dashboard admin, bot WhatsApp AI, dan portal jemaat dalam satu platform untuk mengelola gereja modern dengan mudah, aman, dan terintegrasi.',
   generator: 'v0.app',
 }
 
