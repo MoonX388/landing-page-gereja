@@ -24,8 +24,8 @@ export default function DashboardSidebar({
   const isProfileRoute = pathname.includes("/dashboard/profile")
   const isInternalRoute = churchSubdomain && reservedKeywords.includes(String(churchSubdomain))
 
+  // Menggunakan warna gelap permanen agar sidebar tidak putih
   return (
-    {/* Menggunakan warna gelap permanen agar sidebar tidak putih */}
     <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-950 text-gray-100 border-r border-gray-900 transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:w-64 flex-shrink-0 h-full`}>
       <div className="flex flex-col h-full">
         

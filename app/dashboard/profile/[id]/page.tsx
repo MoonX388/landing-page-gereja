@@ -24,12 +24,10 @@ export default function UserProfilePage() {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6 font-sans">
       <div>
-        {/* Menggunakan text-foreground agar mendukung dark mode */}
         <h1 className="text-2xl font-bold text-foreground">Pengaturan Akun Pengguna</h1>
         <p className="text-sm text-muted-foreground">Kelola informasi login pribadi dan kata sandi Anda di sini.</p>
       </div>
 
-      {/* Menggunakan bg-card dan border-border */}
       <Card className="shadow-sm border-border bg-card rounded-xl">
         <CardHeader>
           <CardTitle className="text-base font-semibold flex items-center gap-2 text-foreground">
