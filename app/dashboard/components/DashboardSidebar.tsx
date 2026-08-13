@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, usePathname } from "next/navigation"
-import { LayoutDashboard, BarChart3, HardDrive, Database, Globe, Settings, X, Church } from "lucide-react"
+import { LayoutDashboard, BarChart3, HardDrive, Database, Globe, Settings, X, Church, User } from "lucide-react"
 
 interface DashboardSidebarProps {
   sidebarOpen: boolean;
@@ -21,42 +21,52 @@ export default function DashboardSidebar({
 
   const reservedKeywords = ["settings", "profile"]
   
-  // 🚀 DETEKSI RUTE: Menentukan apakah layout sedang menampilkan halaman profil user
   const isProfileRoute = pathname.includes("/dashboard/profile")
   const isInternalRoute = churchSubdomain && reservedKeywords.includes(String(churchSubdomain))
 
   return (
-    <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-gray-900 text-white transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:w-64 flex-shrink-0 h-full`}>
+    {/* Menggunakan bg-card dan border-border dari CSS */}
+    <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border text-card-foreground transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:w-64 flex-shrink-0 h-full`}>
       <div className="flex flex-col h-full">
         
-        {/* Bagian Branding / Header Sidebar */}
-        <div className="px-6 py-5 border-b border-gray-800 flex items-center justify-between">
+        {/* Header Sidebar */}
+        <div className="px-6 py-5 border-b border-border flex items-center justify-between">
           <div 
             className="inline-flex items-center gap-2.5 cursor-pointer" 
             onClick={() => router.push(churchSubdomain && !isProfileRoute && !isInternalRoute ? `/dashboard/${churchSubdomain}` : "/dashboard")}
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-white text-lg font-bold">G</span>
-            <span className="text-lg font-bold tracking-tight truncate max-w-[140px]">
+            {/* Menggunakan bg-primary dan text-primary-foreground */}
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground text-lg font-bold">G</span>
+            <span className="text-lg font-bold tracking-tight truncate max-w-[140px] text-foreground">
               {churchSubdomain && !isProfileRoute && !isInternalRoute ? namaGerejaResmi : "Master Control"}
             </span>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-gray-400 hover:text-white">
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-muted-foreground hover:text-foreground">
             <X className="h-5 w-5" />
           </button>
         </div>
         
-        {/* Menu Navigasi Berdasarkan Rute Dinamis */}
+        {/* Menu Navigasi */}
         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          {!churchSubdomain || isProfileRoute || isInternalRoute ? (
+          {isProfileRoute ? (
             <>
-              {/* Tampilan Menu Utama Master & Halaman Profil Akun */}
+              {/* ? MENU KHUSUS HALAMAN PROFIL */}
+              <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Akun Saya</div>
+              <SidebarLink onClick={() => { setSidebarOpen(false); router.push(`/dashboard`) }} label="Kembali ke Dashboard" icon={LayoutDashboard} active={false} />
+              <SidebarLink onClick={() => { setSidebarOpen(false); }} label="Edit Profil" icon={User} active={true} />
+            </>
+          ) : !churchSubdomain || isInternalRoute ? (
+            <>
+              {/* MENU UTAMA MASTER */}
+              <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Master Menu</div>
               <SidebarLink onClick={() => { setSidebarOpen(false); router.push(`/dashboard`) }} label="Main Overview" icon={LayoutDashboard} active={pathname === "/dashboard"} />
               <SidebarLink onClick={() => { setSidebarOpen(false); router.push(`/dashboard?tab=churches`) }} label="Daftar Klien" icon={Church} active={pathname.includes("tab=churches")} />
               <SidebarLink onClick={() => { setSidebarOpen(false); router.push(`/dashboard?tab=domains`) }} label="Semua Domain" icon={Globe} active={pathname.includes("tab=domains")} />
             </>
           ) : (
             <>
-              {/* Tampilan Menu Cabang Spesifik berdasarkan Subdomain */}
+              {/* MENU CABANG SPESIFIK */}
+              <div className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Menu Gereja</div>
               <SidebarLink onClick={() => { setSidebarOpen(false); router.push(`/dashboard/${churchSubdomain}`) }} label="Overview" icon={LayoutDashboard} active={pathname === `/dashboard/${churchSubdomain}`} />
               <SidebarLink onClick={() => { setSidebarOpen(false); router.push(`/dashboard/${churchSubdomain}/analytics`) }} label="Analytics" icon={BarChart3} active={pathname === `/dashboard/${churchSubdomain}/analytics`} />
               <SidebarLink onClick={() => { setSidebarOpen(false); router.push(`/dashboard/${churchSubdomain}/storage`) }} label="Storage" icon={HardDrive} active={pathname === `/dashboard/${churchSubdomain}/storage`} />
@@ -73,7 +83,8 @@ export default function DashboardSidebar({
 
 function SidebarLink({ onClick, label, active = false, icon: Icon }: { onClick: () => void; label: string; active?: boolean; icon: React.ComponentType<{ className: string }> }) {
   return (
-    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${active ? "bg-blue-600 text-white" : "text-gray-400 hover:text-white hover:bg-gray-800"}`}>
+    {/* Menggunakan bg-primary untuk state aktif, dan hover:bg-accent untuk state tidak aktif */}
+    <button onClick={onClick} className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${active ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}>
       <Icon className="h-5 w-5 flex-shrink-0" />
       <span>{label}</span>
     </button>
