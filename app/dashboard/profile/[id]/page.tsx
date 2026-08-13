@@ -48,7 +48,7 @@ export default function UserProfilePage() {
               <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5 flex items-center gap-1">
                 <Lock className="h-3 w-3" /> Ganti Kata Sandi Baru
               </label>
-              <Input type="password" placeholder="••••••••" value={passwordBaru} onChange={(e) => setPasswordBaru(e.target.value)} className="bg-background text-foreground" />
+              <Input type="password" placeholder="********" value={passwordBaru} onChange={(e) => setPasswordBaru(e.target.value)} className="bg-background text-foreground" />
             </div>
             <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-xs px-4 h-9">
               <Save className="h-4 w-4 mr-1" /> Simpan Akun
