@@ -24,33 +24,35 @@ export default function UserProfilePage() {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6 font-sans">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Pengaturan Akun Pengguna</h1>
-        <p className="text-sm text-gray-500">Kelola informasi login pribadi dan kata sandi Anda di sini.</p>
+        {/* Menggunakan text-foreground agar mendukung dark mode */}
+        <h1 className="text-2xl font-bold text-foreground">Pengaturan Akun Pengguna</h1>
+        <p className="text-sm text-muted-foreground">Kelola informasi login pribadi dan kata sandi Anda di sini.</p>
       </div>
 
-      <Card className="shadow-sm border border-gray-200 bg-white rounded-xl">
+      {/* Menggunakan bg-card dan border-border */}
+      <Card className="shadow-sm border-border bg-card rounded-xl">
         <CardHeader>
-          <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <User className="h-5 w-5 text-blue-600" /> Kredensial Pengguna (ID: {profileUserId})
+          <CardTitle className="text-base font-semibold flex items-center gap-2 text-foreground">
+            <User className="h-5 w-5 text-primary" /> Kredensial Pengguna (ID: {profileUserId})
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleUpdateAccount} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Nama Lengkap Anda</label>
-              <Input value={namaAdmin} onChange={(e) => setNamaAdmin(e.target.value)} required />
+              <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Nama Lengkap Anda</label>
+              <Input value={namaAdmin} onChange={(e) => setNamaAdmin(e.target.value)} required className="bg-background text-foreground" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Email Login</label>
-              <Input value={user?.email} disabled className="bg-gray-50 text-gray-400 cursor-not-allowed font-mono" />
+              <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5">Email Login</label>
+              <Input value={user?.email} disabled className="bg-muted text-muted-foreground cursor-not-allowed font-mono" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5 flex items-center gap-1">
+              <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1.5 flex items-center gap-1">
                 <Lock className="h-3 w-3" /> Ganti Kata Sandi Baru
               </label>
-              <Input type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={passwordBaru} onChange={(e) => setPasswordBaru(e.target.value)} />
+              <Input type="password" placeholder="••••••••" value={passwordBaru} onChange={(e) => setPasswordBaru(e.target.value)} className="bg-background text-foreground" />
             </div>
-            <Button type="submit" className="bg-blue-600 text-white rounded-lg text-xs px-4 h-9">
+            <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg text-xs px-4 h-9">
               <Save className="h-4 w-4 mr-1" /> Simpan Akun
             </Button>
           </form>
