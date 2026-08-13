@@ -35,8 +35,9 @@ export default function DashboardHeader({ sidebarOpen, setSidebarOpen, user, log
     }
   }
 
+  // Komentar dipindah ke sini
+  // Menggunakan bg-background dan border-border dari CSS
   return (
-    {/* Menggunakan bg-background dan border-border dari CSS */}
     <header className="bg-background border-b border-border sticky top-0 z-40">
       <div className="flex items-center justify-between px-4 py-3 md:px-6">
         
