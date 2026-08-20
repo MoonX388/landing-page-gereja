@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "../../../context/AuthContext"
-import { ShieldAlert, Save, HelpCircle, HardDrive, ToggleLeft, ToggleRight } from "lucide-react"
-import api from "@/lib/api" // 🚀 Menggunakan instance Axios pusat
+import { ShieldAlert, Save, HelpCircle, HardDrive, ToggleLeft, ToggleRight, ArrowRightLeft } from "lucide-react"
+import api from "@/lib/api"
 
 export default function SettingsView() {
   const params = useParams()
@@ -15,13 +15,19 @@ export default function SettingsView() {
   const { user } = useAuth() as any
   const dashboardId = params?.id
 
+  // State untuk form profil
   const [namaGereja, setNamaGereja] = useState(user?.namaGereja || "")
   const [namaAdmin, setNamaAdmin] = useState(user?.namaAdmin || "")
+  const [username, setUsername] = useState(user?.username || "") // 👈 Baru
+  const [noHpAdmin, setNoHpAdmin] = useState(user?.noHpAdmin || "") // 👈 Baru
   const [maxUploadSize, setMaxUploadSize] = useState("10")
   const [autoCompress, setAutoCompress] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  // Ambil data profil terbaru dari server saat halaman diakses
+  // State untuk form transfer kepemilikan
+  const [transferTarget, setTransferTarget] = useState("")
+  const [isTransferring, setIsTransferring] = useState(false)
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -29,6 +35,8 @@ export default function SettingsView() {
         if (res.data) {
           if (res.data.namaGereja) setNamaGereja(res.data.namaGereja)
           if (res.data.namaAdmin) setNamaAdmin(res.data.namaAdmin)
+          if (res.data.username) setUsername(res.data.username) // 👈 Baru
+          if (res.data.noHpAdmin) setNoHpAdmin(res.data.noHpAdmin) // 👈 Baru
         }
       } catch (err) {
         console.error("Gagal sinkronisasi profil:", err)
@@ -42,16 +50,17 @@ export default function SettingsView() {
     setSaving(true)
     
     try {
-      // 🚀 Menggunakan instance Axios agar token otomatis terlampir di interceptor
       const res = await api.put("/auth/tenant/update-profile", {
         namaGereja,
         namaAdmin,
+        username, // 👈 Sertakan payload baru
+        noHpAdmin, // 👈 Sertakan payload baru
         maxUploadSize,
         autoCompress
       })
 
       if (res.status === 200 || res.status === 201) {
-        alert("Konfigurasi instansi dan pengaturan file berhasil diperbarui!")
+        alert("Konfigurasi instansi dan pengaturan berhasil diperbarui!")
       }
     } catch (err: any) {
       alert(err.response?.data?.message || "Gagal memperbarui konfigurasi profil.")
@@ -65,6 +74,30 @@ export default function SettingsView() {
     alert("Tiket pengajuan berhasil dibuat. Tim legal kami akan menghubungi Anda via email dalam 1x24 jam.")
   }
 
+  // 🚀 Fitur Baru: Transfer Kepemilikan
+  const handleTransferOwnership = async () => {
+    if (!transferTarget) {
+      alert("Harap masukkan email tujuan transfer.")
+      return
+    }
+    
+    if (!confirm(`PENTING: Anda akan memindahkan HAK MILIK gereja ini ke akun "${transferTarget}".\nAnda akan kehilangan akses admin utama setelah transfer selesai.\nLanjutkan?`)) return
+    
+    setIsTransferring(true)
+    try {
+      // ⚠️ Endpoint ini perlu Anda siapkan di backend NestJS Anda
+      const res = await api.post("/auth/tenant/transfer-ownership", {
+        targetEmail: transferTarget
+      })
+      alert("Permintaan transfer berhasil. Email instruksi telah dikirim ke target akun.")
+      setTransferTarget("")
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Gagal melakukan transfer kepemilikan.")
+    } finally {
+      setIsTransferring(false)
+    }
+  }
+
   return (
     <div className="w-full space-y-6 font-sans">
       <div>
@@ -72,63 +105,79 @@ export default function SettingsView() {
         <p className="text-sm text-gray-500">Konfigurasi parameter operasional dan manajemen berkas pada alamat <span className="text-blue-600 font-mono">/dashboard/{dashboardId}/settings</span></p>
       </div>
 
-      <form onSubmit={handleSaveSettings} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* KOLOM KIRI: FORM CONFIG PROFILE & FILE MANAGEMENT */}
         <div className="lg:col-span-2 space-y-6">
-          <Card className="shadow-sm border border-gray-200 bg-white rounded-xl">
-            <CardHeader>
-              <CardTitle className="text-base font-semibold">Data Profil & Identitas Instansi</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Nama Instansi Gereja</label>
-                <Input value={namaGereja} onChange={(e) => setNamaGereja(e.target.value)} required className="rounded-lg text-sm" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Nama Kepala Administrator (Sub Owner)</label>
-                <Input value={namaAdmin} onChange={(e) => setNamaAdmin(e.target.value)} required className="rounded-lg text-sm" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Alamat Email Utama (Kunci Akses)</label>
-                <Input value={user?.email} disabled className="bg-gray-50 rounded-lg text-sm font-mono text-gray-400 cursor-not-allowed" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-sm border border-gray-200 bg-white rounded-xl">
-            <CardHeader className="flex flex-row items-center gap-2">
-              <HardDrive className="h-5 w-5 text-blue-600" />
-              <div>
-                <CardTitle className="text-base font-semibold">Konfigurasi Berkas & Penyimpanan</CardTitle>
-                <CardDescription className="text-xs">Atur batasan unggah dokumen khotbah, multimedia warta, dan dokumen jemaat.</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Batas Maksimal Ukuran File Per Unggah (MB)</label>
-                <Input type="number" value={maxUploadSize} onChange={(e) => setMaxUploadSize(e.target.value)} min="1" max="100" required className="rounded-lg text-sm" />
-                <p className="text-[11px] text-gray-400 mt-1">Disarankan maksimal 20MB demi efisiensi kuota penyimpanan cloud database Anda.</p>
-              </div>
-
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+          <form onSubmit={handleSaveSettings}>
+            <Card className="shadow-sm border border-gray-200 bg-white rounded-xl mb-6">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">Data Profil & Identitas Instansi</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div>
-                  <p className="text-xs font-semibold text-gray-700">Kompresi Gambar Otomatis</p>
-                  <p className="text-[10px] text-gray-400">Mengecilkan ukuran resolusi foto jemaat/warta saat diunggah untuk menghemat storage.</p>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Nama Instansi Gereja</label>
+                  <Input value={namaGereja} onChange={(e) => setNamaGereja(e.target.value)} required className="rounded-lg text-sm" />
                 </div>
-                <button type="button" onClick={() => setAutoCompress(!autoCompress)} className="text-blue-600 focus:outline-none">
-                  {autoCompress ? <ToggleRight className="h-9 w-9" /> : <ToggleLeft className="h-9 w-9 text-gray-300" />}
-                </button>
-              </div>
-            </CardContent>
-          </Card>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Nama Kepala Administrator</label>
+                    <Input value={namaAdmin} onChange={(e) => setNamaAdmin(e.target.value)} required className="rounded-lg text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">No. HP Admin</label>
+                    <Input type="tel" value={noHpAdmin} onChange={(e) => setNoHpAdmin(e.target.value)} placeholder="08..." required className="rounded-lg text-sm" />
+                  </div>
+                </div>
 
-          <Button type="submit" disabled={saving} className="rounded-lg text-xs gap-1.5 bg-blue-600 text-white px-4 h-10 shadow-sm">
-            <Save className="h-4 w-4" /> {saving ? "Menyimpan..." : "Simpan Semua Perubahan"}
-          </Button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Nama Pengguna (Username)</label>
+                    <Input value={username} onChange={(e) => setUsername(e.target.value)} required className="rounded-lg text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Alamat Email Utama</label>
+                    <Input value={user?.email} disabled className="bg-gray-50 rounded-lg text-sm font-mono text-gray-400 cursor-not-allowed" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm border border-gray-200 bg-white rounded-xl mb-6">
+              <CardHeader className="flex flex-row items-center gap-2">
+                <HardDrive className="h-5 w-5 text-blue-600" />
+                <div>
+                  <CardTitle className="text-base font-semibold">Konfigurasi Berkas & Penyimpanan</CardTitle>
+                  <CardDescription className="text-xs">Atur batasan unggah dokumen khotbah, multimedia warta, dan dokumen jemaat.</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1.5">Batas Maksimal Ukuran File Per Unggah (MB)</label>
+                  <Input type="number" value={maxUploadSize} onChange={(e) => setMaxUploadSize(e.target.value)} min="1" max="100" required className="rounded-lg text-sm" />
+                  <p className="text-[11px] text-gray-400 mt-1">Disarankan maksimal 20MB demi efisiensi kuota penyimpanan cloud database Anda.</p>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+                  <div>
+                    <p className="text-xs font-semibold text-gray-700">Kompresi Gambar Otomatis</p>
+                    <p className="text-[10px] text-gray-400">Mengecilkan ukuran resolusi foto jemaat/warta saat diunggah untuk menghemat storage.</p>
+                  </div>
+                  <button type="button" onClick={() => setAutoCompress(!autoCompress)} className="text-blue-600 focus:outline-none">
+                    {autoCompress ? <ToggleRight className="h-9 w-9" /> : <ToggleLeft className="h-9 w-9 text-gray-300" />}
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button type="submit" disabled={saving} className="rounded-lg text-xs gap-1.5 bg-blue-600 text-white px-4 h-10 shadow-sm">
+              <Save className="h-4 w-4" /> {saving ? "Menyimpan..." : "Simpan Semua Perubahan"}
+            </Button>
+          </form>
         </div>
 
-        {/* KOLOM KANAN: DANGER ZONE & SUPPORT */}
+        {/* KOLOM KANAN: TRANSFER & DANGER ZONE & SUPPORT */}
         <div className="space-y-4">
           <Card className="shadow-sm border border-gray-200 bg-white rounded-xl">
             <CardHeader className="flex flex-row items-center gap-2">
@@ -136,7 +185,35 @@ export default function SettingsView() {
               <CardTitle className="text-base font-semibold">Bantuan Layanan</CardTitle>
             </CardHeader>
             <CardContent className="text-xs text-gray-500 leading-relaxed">
-              Mengalami kendala alokasi penyimpanan file atau kuota penuh? Silakan ajukan upgrade paket atau hubungi tim teknis pusat di <a href="mailto:support@gerejapintar.id" className="text-blue-600 underline font-medium">support@gerejapintar.id</a>.
+              Mengalami kendala alokasi penyimpanan file atau kuota penuh? Silakan ajukan upgrade paket atau hubungi tim teknis pusat di <a href="mailto:support@gerejapintar.id" className="text-blue-600 underline font-medium">support@gerejapintar.id</a>
+            </CardContent>
+          </Card>
+
+          {/* 🚀 Fitur Baru: Transfer Kepemilikan */}
+          <Card className="border-orange-200 bg-orange-50/30 shadow-sm rounded-xl">
+            <CardHeader className="flex flex-row items-center gap-2">
+              <ArrowRightLeft className="h-5 w-5 text-orange-600" />
+              <div>
+                <CardTitle className="text-sm font-bold text-orange-900">Transfer Kepemilikan</CardTitle>
+                <CardDescription className="text-[11px] text-orange-700">Pindahkan hak akses Admin Utama ke akun lain</CardDescription>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Input 
+                type="email" 
+                placeholder="Masukkan email target..." 
+                value={transferTarget}
+                onChange={(e) => setTransferTarget(e.target.value)}
+                className="rounded-lg text-xs h-9 bg-white" 
+              />
+              <Button 
+                type="button" 
+                disabled={isTransferring}
+                className="w-full rounded-lg text-xs bg-orange-600 hover:bg-orange-700 text-white h-9 shadow-sm" 
+                onClick={handleTransferOwnership}
+              >
+                {isTransferring ? "Memproses..." : "Transfer Akun Gereja"}
+              </Button>
             </CardContent>
           </Card>
 
@@ -155,8 +232,7 @@ export default function SettingsView() {
             </CardContent>
           </Card>
         </div>
-
-      </form>
+      </div>
     </div>
   )
 }

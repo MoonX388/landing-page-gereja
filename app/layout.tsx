@@ -23,7 +23,6 @@ export const metadata: Metadata = {
   title: 'Gereja Pintar — Platform Digital Manajemen Gereja Terpadu',
   description:
     'Gereja Pintar menyatukan dashboard admin, bot WhatsApp AI, dan portal jemaat dalam satu platform untuk mengelola gereja modern dengan mudah, aman, dan terintegrasi.',
-  generator: 'v0.app',
 }
 
 export const viewport: Viewport = {

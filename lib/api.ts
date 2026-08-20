@@ -1,7 +1,13 @@
 import axios from "axios";
 
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || (
+  process.env.NODE_ENV === "production"
+    ? "https://api.gerejapintar.id"
+    : "http://localhost:8080"
+);
+
 const api = axios.create({
-  baseURL: "https://api.gerejapintar.id", // Ganti dengan URL API Anda 
+  baseURL: apiBaseUrl,
 });
 
 // Interceptor untuk menyisipkan Token JWT otomatis ke setiap request

@@ -11,7 +11,7 @@ export function CTA() {
           Siap membawa pelayanan gereja Anda ke era digital?
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80 leading-relaxed text-pretty">
-          Bergabunglah dengan ratusan gereja yang telah memercayakan pengelolaan jemaat kepada GerejaPintar.
+          Bergabunglah dengan ratusan gereja yang telah memercayakan pengelolaan jemaat kepada Gereja Pintar.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a href="#harga">

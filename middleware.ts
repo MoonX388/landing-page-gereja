@@ -36,7 +36,7 @@ export function middleware(req: NextRequest) {
   }
 
   // 4. DAFTAR RUTE PUBLIK GLOBAL
-  const publicRoutes = ['/login', '/register', '/forgot-pwd', '/reset-pwd', '/verify-email', '/jemaat'];
+  const publicRoutes = ['/login', '/register', '/forgot-pwd', '/reset-pwd', '/verify-email', '/jemaat', '/daftar-gereja', '/artikel', '/layanan'];
   if (publicRoutes.some(route => url.pathname.startsWith(route))) {
     return NextResponse.next();
   }

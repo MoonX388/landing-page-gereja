@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import api from "@/lib/api"
 import { Users, HardDrive, ShieldCheck, CalendarRange } from "lucide-react"
 
 export default function OverviewView({ user, dashboardId }: { user: any; dashboardId: any }) {
@@ -16,33 +17,85 @@ export default function OverviewView({ user, dashboardId }: { user: any; dashboa
   useEffect(() => {
     if (!dashboardId || dashboardId === "default") return
 
+    let cancelled = false
     setLoading(true)
     setErrorMessage(null)
 
-    fetch(`https://api.gerejapintar.id/auth/dashboard-stats/${dashboardId}`)
-      .then(async (res) => {
-        if (!res.ok) {
-          // 🚀 BONGKAR ERROR DETAIL DARI SERVER NESTJS
-          const errorJson = await res.json().catch(() => null);
-          const errorMsg = errorJson?.message || `Error HTTP Status: ${res.status}`;
-          throw new Error(errorMsg);
-        }
-        return res.json()
-      })
-      .then((data) => {
+    const loadStats = async () => {
+      try {
+        const res = await api.get(`/auth/dashboard-stats/${dashboardId}`)
+        const data = res.data || {}
+        if (cancelled) return
         setStats({
-          totalJemaat: data.totalJemaat,
-          totalStaffAdmin: data.totalStaffAdmin,
-          agendaBulanIni: data.agendaBulanIni,
+          totalJemaat: data.totalJemaat ?? 0,
+          totalStaffAdmin: data.totalStaffAdmin ?? 0,
+          agendaBulanIni: data.agendaBulanIni ?? 0,
         })
         setLoading(false)
-      })
-      .catch((err) => {
-        // 🚀 TAMPILKAN ERROR ASLI DI CONSOLE BROWSER (Tekan F12 -> Console)
-        console.error("🔴 DETAIL ERROR DARI BACKEND:", err.message)
-        setErrorMessage(err.message)
+        return
+      } catch (err: any) {
+        console.error("🔴 DETAIL ERROR DARI BACKEND:", err)
+
+        const status = err?.response?.status
+        // Jika backend mengembalikan 404 untuk subdomain, coba fallback: ambil daftar gereja dan temukan id yang cocok
+        if (status === 404) {
+          try {
+            const listRes = await api.get('/auth/public-churches')
+            const list = listRes.data || []
+            const match = list.find((c: any) => c.subdomain === dashboardId || c.subdomain === `${dashboardId}`)
+            if (match) {
+              console.debug('Fallback: ketemu entri gereja:', match)
+              const attempts: string[] = []
+              if (match.id) attempts.push(`/auth/dashboard-stats/${match.id}`)
+              if (match.subdomain) attempts.push(`/auth/dashboard-stats/${match.subdomain}`)
+
+              let succeeded = false
+              for (const path of attempts) {
+                try {
+                  const retry = await api.get(path)
+                  const d2 = retry.data || {}
+                  if (cancelled) return
+                  setStats({
+                    totalJemaat: d2.totalJemaat ?? 0,
+                    totalStaffAdmin: d2.totalStaffAdmin ?? 0,
+                    agendaBulanIni: d2.agendaBulanIni ?? 0,
+                  })
+                  setLoading(false)
+                  succeeded = true
+                  break
+                } catch (eRetry: any) {
+                  console.warn('Retry ke', path, 'gagal:', eRetry?.response?.status || eRetry?.message || eRetry)
+                }
+              }
+
+              if (succeeded) return
+              if (!cancelled) setErrorMessage(`Hub Tidak Ditemukan untuk subdomain '${dashboardId}' (coba id/subdomain gagal).`)
+              setLoading(false)
+              return
+            } else {
+              if (!cancelled) setErrorMessage(`Hub Tidak Ditemukan untuk subdomain '${dashboardId}'.`)
+              setLoading(false)
+              return
+            }
+          } catch (e2: any) {
+            console.error('🔴 Gagal ambil daftar gereja untuk fallback:', e2)
+            const msg2 = e2?.response?.data?.message || e2?.message || String(e2)
+            if (!cancelled) setErrorMessage(msg2)
+            setLoading(false)
+            return
+          }
+        }
+
+        const msg = err?.response?.data?.message || err?.message || String(err)
+        if (!cancelled) setErrorMessage(msg)
         setLoading(false)
-      })
+      }
+    }
+
+    loadStats()
+    return () => {
+      cancelled = true
+    }
   }, [dashboardId])
 
   const jemaatPercentage = Math.min(Math.round((stats.totalJemaat / 5000) * 100), 100)

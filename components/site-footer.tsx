@@ -17,7 +17,7 @@ const columns = [
     title: "Perusahaan",
     links: [
       { label: "Tentang Kami", href: "/tentang-kami" },
-      { label: "Blog", href: "/blog" },
+      { label: "Artikel", href: "/artikel" },
       { label: "Karier", href: "/karier" },
       { label: "Mitra", href: "/mitra" },
       { label: "Kontak", href: "/kontak" },
@@ -29,10 +29,16 @@ const columns = [
       { label: "Pusat Bantuan", href: "/pusat-bantuan" },
       { label: "Dokumentasi", href: "https://docs.gerejapintar.id" },
       { label: "Status Sistem", href: "/status-sistem" },
-      { label: "Kebijakan Privasi", href: "/kebijakan-privasi" },
-      { label: "Syarat Layanan", href: "/syarat-layanan" },
+      { label: "Api", href: "https://docs.gerejapintar.id/api" },
     ],
   },
+  {
+    title: "Syarat & Kebijakan",
+    links: [
+      { label: "Kebijakan Privasi", href: "/kebijakan-privasi" },
+      { label: "Syarat Layanan", href: "/syarat-layanan" },
+    ]
+  }
 ]
 
 export function SiteFooter() {

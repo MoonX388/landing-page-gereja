@@ -5,6 +5,7 @@ import { useParams, useRouter, usePathname } from "next/navigation"
 import { useAuth } from "../context/AuthContext"
 import DashboardHeader from "./components/DashboardHeader"
 import DashboardSidebar from "./components/DashboardSidebar" // 🚀 IMPORT SIDEBAR BARU
+import api from "@/lib/api"
 
 export default function GlobalDashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -69,17 +70,22 @@ export default function GlobalDashboardLayout({ children }: { children: React.Re
       return
     }
 
-    fetch(`https://api.gerejapintar.id/auth/check-subdomain/${churchSubdomain}`)
+    // Backend doesn't provide a GET /auth/public-churches/:subdomain endpoint reliably.
+    // Fetch the public list and match the subdomain locally to avoid 404s.
+    api
+      .get('/auth/public-churches')
       .then((res) => {
-        if (!res.ok) throw new Error("Subdomain palsu")
-        return res.json()
-      })
-      .then((data) => {
-        setSubdomainValid(true)
-        setNamaGerejaResmi(data.namaGereja)
+        const list = res.data || []
+        const match = list.find((c: any) => c.subdomain === String(churchSubdomain))
+        if (match) {
+          setSubdomainValid(true)
+          setNamaGerejaResmi(match.namaGereja || "")
+        } else {
+          setSubdomainValid(false)
+        }
       })
       .catch(() => {
-        setSubdomainValid(false) 
+        setSubdomainValid(false)
       })
       
   }, [churchSubdomain, pathname, user?.role, user?.subdomain, loading, router])

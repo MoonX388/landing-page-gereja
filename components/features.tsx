@@ -32,7 +32,7 @@ const features = [
   },
   {
     icon: BellRing,
-    title: "Notifikasi Broadcast",
+    title: "Notifikasi WhatsApp",
     desc: "Kirim pengumuman penting ke seluruh jemaat langsung melalui WhatsApp dalam satu klik.",
   },
   {

@@ -4,7 +4,7 @@ import Image from "next/image"
 import { ArrowUpRight, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-const highlights = ["Tanpa kartu kredit", "Gratis 14 hari", "Setup dalam hitungan menit"]
+const highlights = ["Tanpa kartu kredit", "Gratis", "Setup dalam hitungan menit"]
 
 export function Hero() {
   return (

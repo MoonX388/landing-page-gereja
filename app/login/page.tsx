@@ -175,7 +175,7 @@ const handleSubmit = async (e: React.FormEvent) => {
           className="w-full rounded-lg"
           onClick={handleDemoLogin}
         >
-          Coba Login Demo → demo.gerejapintar.id
+          Coba Login Demo
         </Button>
 
         <div className="mt-6 text-center">

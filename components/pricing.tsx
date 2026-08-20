@@ -27,8 +27,8 @@ const plans = [
   },
   {
     name: "Resort",
-    price: "Rp 310rb",
-    originalPrice: "Rp 350rb",
+    price: "Rp 299rb",
+    originalPrice: "Rp 310rb",
     period: "/bulan",
     description: "Paling populer untuk gereja yang sedang bertumbuh.",
     features: [
@@ -37,6 +37,8 @@ const plans = [
       "Portal jemaat interaktif",
       "Integrasi WhatsApp untuk otomasi",
       "Laporan & analitik lengkap",
+      "Multi Cabang / Multi Jemaat",
+      "Transfer data antar gereja",
       "Dukungan prioritas",
     ],
     cta: "Coba 14 Hari Gratis",
@@ -57,6 +59,8 @@ const plans = [
       "Integrasi khusus",
       "Manajer akun khusus",
       "Pelatihan tim on-site",
+      "Pengeolah Almanak Gereja & Liturgi",
+      
     ],
     cta: "Hubungi Kami",
     // 🚀 Mengarah ke WhatsApp Anda dengan pesan otomatis konsultasi Paket Sinode
@@ -92,7 +96,7 @@ export function Pricing() {
             >
               {plan.highlighted && (
                 <span className="mb-4 inline-flex w-fit rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-                  Paling Populer
+                  Rekomendasi
                 </span>
               )}
               <h3 className="font-serif text-xl font-semibold">{plan.name}</h3>

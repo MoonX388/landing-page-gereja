@@ -109,7 +109,7 @@ export default function PusatBantuanPage() {
       icon: MessageCircle,
       title: "WhatsApp Chat",
       description: "Chat dengan support team",
-      value: "+62 812-3456-7890",
+      value: "+62 821-5802-4074",
       action: "Chat Sekarang",
     },
     {
