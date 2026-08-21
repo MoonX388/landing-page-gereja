@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Church, Menu, X } from "lucide-react"
-import { useAuth } from "@/context/AuthContext" // Sesuaikan path ini jika perlu
+import { useAuth } from "@/app/context/AuthContext" // Sesuaikan path ini jika perlu
 import { Avatar, AvatarFallback } from "@/components/ui/avatar" // Pastikan komponen UI ini ada
 
 const navLinks = [
