@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     'Gereja Pintar menyatukan dashboard admin, bot WhatsApp AI, dan portal jemaat dalam satu platform untuk mengelola gereja modern dengan mudah, aman, dan terintegrasi.',
   openGraph: {
     siteName: 'Gereja Pintar',
-    url: 'https://www.domainkamu.com', // Ganti dengan URL aslimu
+    url: 'https://www.gerejapintar.id', // Ganti dengan URL aslimu
   },
 }
 
