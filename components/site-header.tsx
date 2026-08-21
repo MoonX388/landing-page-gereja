@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { Church, Menu, X } from "lucide-react"
+import { useAuth } from "./context/AuthContext" // Sesuaikan path ini jika perlu
+import { Avatar, AvatarFallback } from "@/components/ui/avatar" // Pastikan komponen UI ini ada
 
 const navLinks = [
   { label: "Fitur", href: "/fitur" },
@@ -11,11 +13,13 @@ const navLinks = [
   { label: "Not Angka", href: "/not-angka" },
   { label: "Dashboard", href: "/dashboard" },
   { label: "Daftar Gereja", href: "/daftar-gereja" }
-  
 ]
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
+  
+  // Panggil data user dari context
+  const { user } = useAuth() 
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
@@ -46,18 +50,34 @@ export function SiteHeader() {
 
         {/* Tombol Auth Desktop */}
         <div className="hidden items-center gap-3 lg:flex">
-          <a
-            href="/login"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Masuk
-          </a>
-          <a href="/register" className="inline-flex h-8 items-center justify-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/80">
-            Daftar Gratis
-          </a>
+          {user ? (
+            // Tampilan Jika Sudah Login
+            <>
+              <a href={`/dashboard/profile/${user?.id || 'me'}`} className="transition-opacity hover:opacity-80">
+                <Avatar className="h-8 w-8 border border-border">
+                  <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
+                    {user?.namaAdmin?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </a>
+              <a href="/dashboard" className="inline-flex h-8 items-center justify-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/80">
+                Dashboard
+              </a>
+            </>
+          ) : (
+            // Tampilan Jika Belum Login
+            <>
+              <a href="/login" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Masuk
+              </a>
+              <a href="/register" className="inline-flex h-8 items-center justify-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/80">
+                Daftar Gratis
+              </a>
+            </>
+          )}
         </div>
 
-        {/* Tombol Toggle Mobile & Tablet (Muncul sampai layar medium/tablet, hilang di lg) */}
+        {/* Tombol Toggle Mobile & Tablet */}
         <button
           type="button"
           className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-foreground lg:hidden z-10"
@@ -88,13 +108,28 @@ export function SiteHeader() {
                   {link.label}
                 </a>
               ))}
+              
+              {/* Tombol Auth Mobile */}
               <div className="mt-2 flex flex-col gap-2">
-                <a href="/login" className="inline-flex h-8 items-center justify-center rounded-full border border-border bg-background px-3 text-sm font-medium text-foreground transition-all hover:bg-muted">
-                  Masuk
-                </a>
-                <a href="/register" className="inline-flex h-8 items-center justify-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/80">
-                  Daftar Gratis
-                </a>
+                {user ? (
+                   <>
+                    <a href={`/dashboard/profile/${user?.id || 'me'}`} className="inline-flex h-8 items-center justify-center rounded-full border border-border bg-background px-3 text-sm font-medium text-foreground transition-all hover:bg-muted">
+                      Profil Saya
+                    </a>
+                    <a href="/dashboard" className="inline-flex h-8 items-center justify-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/80">
+                      Buka Dashboard
+                    </a>
+                   </>
+                ) : (
+                  <>
+                    <a href="/login" className="inline-flex h-8 items-center justify-center rounded-full border border-border bg-background px-3 text-sm font-medium text-foreground transition-all hover:bg-muted">
+                      Masuk
+                    </a>
+                    <a href="/register" className="inline-flex h-8 items-center justify-center rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/80">
+                      Daftar Gratis
+                    </a>
+                  </>
+                )}
               </div>
             </nav>
           </div>
