@@ -11,7 +11,6 @@ const navLinks = [
   { label: "Solusi", href: "/solusi" },
   { label: "Harga", href: "/#harga" },
   { label: "Not Angka", href: "/not-angka" },
-  { label: "Dashboard", href: "/dashboard" },
   { label: "Daftar Gereja", href: "/daftar-gereja" }
 ]
 
