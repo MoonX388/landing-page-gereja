@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Church, Globe, ShieldAlert, ArrowRight, Ban, CheckCircle, Trash2 } from "lucide-react"
+import { Church, Globe, ShieldAlert, ArrowRight, Ban, CheckCircle, Trash2, MessageCircle } from "lucide-react"
 import ConfirmationModal from "./components/ConfirmationModal"
 import api from "@/lib/api"
 
@@ -184,7 +184,7 @@ export default function MasterDashboardPage() {
                       <Button 
                         variant="destructive" 
                         size="sm"
-                        className="rounded-lg text-xs gap-1 h-8 bg-destructive hover:bg-destructive/90"
+                        className="rounded-lg text-xs gap-1 h-8 bg-red-600 hover:bg-red-700 text-white"
                         onClick={() => triggerDeleteModal(gereja.id, gereja.namaGereja)}
                       >
                         <Trash2 className="h-3.5 w-3.5" /> Hapus
@@ -253,17 +253,17 @@ export default function MasterDashboardPage() {
             </div>
 
             <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
-              <button onClick={() => setDeleteModalOpen(false)} className="rounded-xl border border-border bg-background px-4 py-2 text-xs font-semibold text-foreground shadow-sm hover:bg-muted">
+              <button onClick={() => setDeleteModalOpen(false)} className="rounded-lg text-xs gap-1 h-8 border border-border bg-background text-foreground shadow-sm hover:bg-muted">
                 Batalkan
               </button>
-              <button onClick={handleExecuteDeleteChurch} className="rounded-xl bg-destructive px-4 py-2 text-xs font-semibold text-destructive-foreground shadow-sm hover:bg-destructive/90">
+              <button onClick={handleExecuteDeleteChurch} className="rounded-lg text-xs gap-1 h-8 bg-red-600 hover:bg-red-700 text-white shadow-sm">
                 Mutilasi Data Permanen
               </button>
             </div>
           </div>
         </div>
       )}
-
+      
     </div>
   )
 }

@@ -28,7 +28,7 @@ export default function DashboardSidebar({
     <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border transform transition-transform duration-200 ease-in-out ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:static md:w-64 flex-shrink-0 h-full`}>
       <div className="flex flex-col h-full">
         
-        <div className="px-6 py-5 border-b border-sidebar-border flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-sidebar-border flex items-center justify-between">
           <div 
             className="inline-flex items-center gap-2.5 cursor-pointer" 
             onClick={() => router.push(churchSubdomain && !isProfileRoute && !isInternalRoute ? `/dashboard/${churchSubdomain}` : "/dashboard")}
